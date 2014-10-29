@@ -207,13 +207,35 @@ builder.selenium2.io.addLangFormatter({
       "  ScriptVars[{variable}] = '' + text;\n" +
       "});\n",
     "assertTextPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
+      "  if(text.indexOf({text}) > -1) {\n" +
+      "    return assert.ok(true);\n" +
+      "  } else {\n" +
+      "    return assert.ok(false);\n" +
+      "  }\n" +
+      "});\n",
     "verifyTextPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
+      "  if(text.indexOf({text}) > -1) {\n" +
+      "    return true;\n" +
+      "  } else {\n" +
+      "    return false;\n" +
+      "  }\n" +
+      "});\n",
     "waitForTextPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.wait(function() {\n" +
+      "  $$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
+      "    return text.indexOf({text}) > -1;\n" +
+      "  });\n" +
+      "}, DefaultTimeout);\n",
     "storeTextPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
+      "  if(text.indexOf({text}) > -1) {\n" +
+      "    ScriptVars[{variable}] = true;\n" +
+      "  } else {\n" +
+      "    ScriptVars[{variable}] = false;\n" +
+      "  }\n" +
+      "});\n",
     "assertBodyText":
       function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
     "verifyBodyText":
