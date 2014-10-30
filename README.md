@@ -12,7 +12,7 @@ Note: I still need to create a Se-builder "plugin" around the formatter, but you
 `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/extensions/seleniumbuilder@saucelabs.com/chrome/content/html/js/builder/selenium2/io/formats`
 3. Backup and Edit the following file: 
 `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/extensions/seleniumbuilder@saucelabs.com/chrome/content/html/js/loader.js`
-4. Add the following to the huge list in "builder.loader.mainScripts = [" (you'll see what I mean):
+4. Add the following to the huge list in `builder.loader.mainScripts = [` (you'll see what I mean):
    `"builder/selenium2/io/formats/nr-synthetics.js",`
 5. Restart the se-builder if you have it running. You don't have to restart Firefox, just exit and re-open the IDE.
 
@@ -27,3 +27,5 @@ Note: I still need to create a Se-builder "plugin" around the formatter, but you
 5. Cut and paste the contents of this file to a new Scripted Browser.
 6. ???
 7. Profit!
+
+Questions? Comments? Heckling? [Hit me up!](mailto:seth@newrelic.com)
