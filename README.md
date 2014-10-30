@@ -1,13 +1,13 @@
 synthetics-sebuilder-formatter
 ==============================
 
-Formatter plugin for se-builder. Generates javascript to use in New Relic Synthetics Scripted Browser scripts.
+Formatter plugin for se-builder. Generates javascript to use in New Relic Synthetics Scripted Browser tests.
 
 ## Installation
 
 Note: I still need to create a Se-builder "plugin" around the formatter, but you can use it as-is by following these steps.
 
-1. Download & install [se-builder](http://sebuilder.github.io/se-builder/). Yes, you need [FireFox](https://www.mozilla.org/en-US/firefox/new/).
+1. Download & install [se-builder](http://sebuilder.github.io/se-builder/). Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
 2. Copy nr-synthetics.js from this repo into this directory on your laptop:
 `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/extensions/seleniumbuilder@saucelabs.com/chrome/content/html/js/builder/selenium2/io/formats`
 3. Backup and Edit the following file: 
