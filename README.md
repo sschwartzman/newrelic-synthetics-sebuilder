@@ -1,7 +1,7 @@
 synthetics-sebuilder-formatter
 ==============================
 
-Formatter plugin for se-builder. Generates javascript to use in New Relic Synthetics Scripted Browser tests.
+Formatter for se-builder - generates javascript to use in New Relic Synthetics Scripted Browser tests.
 
 ## Installation
 
@@ -27,5 +27,3 @@ Note: I still need to create a Se-builder "plugin" around the formatter, but you
 5. Cut and paste the contents of this file to a new Scripted Browser.
 6. ???
 7. Profit!
-
-Questions? Comments? Heckling? [Hit me up!](mailto:seth@newrelic.com)
