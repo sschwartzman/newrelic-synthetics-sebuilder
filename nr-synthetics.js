@@ -37,7 +37,7 @@ builder.selenium2.io.addLangFormatter({
     "  VARS = {},\n" +
     "  DefaultTimeout = 10000;\n\n",
   end:
-    "\nconsole.log('Browser script execution was a SUCCESS!');\n",
+    "console.log('Browser script execution was a SUCCESS!');\n",
   lineForType: {
     "get":
       "$browser.get({url});\n",
@@ -52,7 +52,7 @@ builder.selenium2.io.addLangFormatter({
     "print":
       "console.log({text});\n",
     "pause":
-      "$browser.pause({waitTime})\n",
+      ".pause({waitTime})\n",
     "switchToFrame":
       "$browser.switchTo().frame('{identifier}');\n",
     "switchToFrameByIndex":
@@ -61,46 +61,14 @@ builder.selenium2.io.addLangFormatter({
       "$browser.switchTo().window('{name}');\n",
     "switchToDefaultContent":
       "$browser.switchTo().defaultContent();\n",
-    "assertAlertText":
-      "assert.equal($browser.switchTo().alert().getText(), {text});\n",
-    "verifyAlertText":
-      "return $browser.switchTo().alert().getText() === {text};\n",
-    "waitForAlertText":
-      "$browser.wait(function() {\n" +
-      "  return $browser.switchTo().alert().getText() === {text};\n" +
-      "}, DefaultTimeout);\n",
-    "storeAlertText":
-      "ScriptVars[{variable}] = '' + $browser.switchTo().alert().getText();\n",
-    "assertAlertPresent":
-      "$browser.switchTo().alert().then(function() {\n" +
-      "  assert.ok(true);\n" +
-      "}, function() {\n" +
-      "  assert.ok(false);\n" +
-      "});\n",
-    "verifyAlertPresent":
-      "$browser.switchTo().alert().then(function() {\n" +
-      "  return true;\n" +
-      "}, function() {\n" +
-      "  return false;\n" + 
-      "});\n",
-    "waitForAlertPresent":
-      "$browser.wait(function() {\n" +
-      "  $browser.switchTo().alert()\n" +
-      "}, DefaultTimeout);\n",
-    "storeAlertPresent":
-      "$browser.switchTo().alert().then(function() {\n" +
-      "   ScriptVars[{variable}] = true;\n" +
-      "}, function() {\n" +
-      "  ScriptVars[{variable}] = false;\n" + 
-      "});\n",
-    "answerAlert":
+     "answerAlert":
       "$browser.switchTo().alert().sendKeys({text});\n",
     "acceptAlert":
       "$browser.switchTo().alert().accept();\n",
     "dismissAlert":
       "$browser.switchTo().alert().dismiss();\n",
     "store":
-      "ScriptVars['{variable}'] = '' + {text};\n",
+      "${{variable}} = '' + {text};\n",
     "clickElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).click();\n",
     "doubleClickElement":
@@ -108,32 +76,35 @@ builder.selenium2.io.addLangFormatter({
     "mouseOverElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).mouseMove();\n",
     "clickElementWithOffset":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function (el) {\n" +
-      "  $browser.mouseMove(el, {offset});\n" +
-      "});\n",
+      "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) { $browser.mouseMove(el, {offset}); });\n",
     "setElementText":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).clear();\n" +
-      "$browser.findElement($driver.By.{locatorBy}({locator})).sendKeys({text});\n",
+      "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) {\n" +
+      "  el.clear();\n" +
+      "  el.sendKeys({text});\n" +
+      "});\n",
     "sendKeysToElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).sendKeys({text});\n",
     "setElementSelected":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function(el) {\n" +
-      "  if(!el.isSelected()) {\n" +
-      "    el.click();\n" +
+      "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) {\n" +
+      "  if(el.isSelected()) {\n" +
+      "    return el.click();\n" +
       "  }\n" +
       "});\n",
     "setElementNotSelected":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function(el) {\n" +
+      "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) {\n" +
       "  if(el.isSelected()) {\n" +
-      "    el.click();\n" +
+      "    return el.click();\n" +
       "  }\n" +
       "});\n",
     "clearSelections":
       "$browser.findElement($driver.By.{locatorBy}({locator})).clear();\n",
     "dragToAndDropElement":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function(el) {\n" +
-      "  $browser.dragAndDrop(el, {targetLocator})\n" +
-      "});",
+      "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) { $browser.dragAndDrop(el, {targetLocator}) });\n",
     "clickAndHoldElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).mouseDown();\n",
     "releaseElement":
@@ -143,9 +114,9 @@ builder.selenium2.io.addLangFormatter({
     "addCookie":
       function(step, escapeValue) {
         var data = {value: step.value, name: step.name};
-        step.options.split("/").forEach(function(entry) {
+        step.options.split(",").forEach(function(entry) {
           var entryArr = entry.split("=");
-          data[entryArr[0]] = data[entryArr[1]];
+          data[entryArr[0]] = entryArr[1];
         });
         return "$browser.addCookie(" + JSON.stringify(data) + ");\n";
       },
@@ -154,7 +125,21 @@ builder.selenium2.io.addLangFormatter({
     "saveScreenshot":
       "$browser.takeScreenshot();\n",
   },
-  waitFor: "",
+  waitFor: function(step, escapeValue, doSubs, getter) {
+    if (step.negated) {
+      return doSubs(
+        "$browser.wait(function() {\n" +
+        "{getter}\n" +
+        "  return {value} !== {cmp};\n" +
+        "{getterFinish} }, DefaultTimeout);\n", getter);
+    } else {
+      return doSubs(
+        "$browser.wait(function() {\n" +
+        "{getter}\n" +
+        "  return {value} === {cmp};\n" +
+        "{getterFinish} }, DefaultTimeout);\n", getter);
+    }
+  },
   assert: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
@@ -163,7 +148,7 @@ builder.selenium2.io.addLangFormatter({
         "    $browser.quit();\n" +
         "    throw new Error('!{stepTypeName} failed');\n" +
         "  }\n" +
-        "{getterFinish}\n", getter);
+        "{getterFinish};\n", getter);
     } else {
       return doSubs(
         "{getter}\n" +
@@ -171,7 +156,7 @@ builder.selenium2.io.addLangFormatter({
         "    $browser.quit();\n" +
         "    throw new Error('{stepTypeName} failed');\n" +
         "  }\n" +
-        "{getterFinish}\n", getter);
+        "{getterFinish};\n", getter);
     }
   },
   verify: function(step, escapeValue, doSubs, getter) {
@@ -181,151 +166,150 @@ builder.selenium2.io.addLangFormatter({
         "  if ({value} === {cmp}) {\n" +
         "    console.log('!{stepTypeName} failed');\n" +
         "  }\n" +
-        "{getterFinish}\n", getter);
+        "{getterFinish};\n", getter);
     } else {
       return doSubs(
         "{getter}\n" +
         "  if ({value} !== {cmp}) {\n" +
         "    console.log('{stepTypeName} failed');\n" +
         "  }\n" +
-        "{getterFinish}\n", getter);
+        "{getterFinish};\n", getter);
     }
   },
   store:
     "{getter}\n" +
-    "${{variable}} = {value};\n" +
-    "{getterFinish}\n",
-  boolean_assert:
-    "{getter}\n" +
-    "if ({posNot}{value}) {\n" +
-    "  $browser.quit(null);\n" +
-    "  throw new Error('{negNot}{stepTypeName} failed');\n" +
-    "}\n" +
-    "{getterFinish}\n",
-  boolean_verify:
-    "{getter}\n" +
-    "if ({posNot}{value}) {\n" +
-    "  $browser.quit(null);\n" +
-    "  console.log('{negNot}{stepTypeName} failed');\n" +
-    "}\n" +
-    "{getterFinish}\n",
-  boolean_waitFor: "",
-  boolean_store:
-    "{getter}\n" +
-    "${{variable}} = {value};" +
-    "{getterFinish}\n",
-  boolean_getters: {
-    "TextPresent": {
-      getter: ".then(function () { return $driver.By.tagName('html'); })\n" +
-      ".then(function (el) { return el.text(); })\n" +
-      ".then(function (text) {\n" +
-      "  var bool = text.indexOf({text}) != -1;",
-      getterFinish: "})",
-      value: "bool"
-    },
-    "ElementPresent": {
-      getter: ".then(function () { return $browser.isElementPresent($driver.By.{locatorBy},{locator}); })\n" +
-      ".then(function (el) {",
-      getterFinish: "})",
-      value: "bool"
-    },
-    "ElementSelected": {
-      getter: ".then(function () { return $browser.isElementPresent($driver.By.{locatorBy}({locator}); })\n" +
-      ".then(function (el) { return $browser.isSelected(el); })\n" +
-      ".then(function (bool) {",
-      getterFinish: "})",
-      value: "bool"
-    },
-    "CookiePresent": {
-      getter: ".then(function () { return $browser.getCookies(); })\n" +
-        ".then(function (cookies) {\n" +
-        "  var hasCookie = _.find(cookies, function(e){ return e.name === {name}; });",
-      getterFinish: "})",
-      value: "hasCookie"
-    },
-    "AlertPresent": { // should return an error if it's not there (and true if it's there)
-      getter: ".then(function () { return $browser.switchTo().alert(); })\n" +
-        ".then(function (bool) { return bool; }, function (err) { return false; })\n" +
-        ".then(function (bool) {",
-      getterFinish: "})",
-      value: "bool"
-    }
-  },
+    "  ${{variable}} = {value};\n" +
+    "{getterFinish};\n",
   getters: {
     "BodyText": {
-      getter: ".then(function () { return $browser.findElement($driver.By.tagName('body')); })\n" +
-        ".then(function (el) { return el.text(); })\n" +
+      getter: "$browser.findElement($driver.By.tagName('body')).getText()\n" +
         ".then(function (text) {",
       getterFinish: "})",
       cmp: "{text}",
       value: "text"
     },
     "PageSource": {
-      getter: ".then(function () { return $browser..getPageSource(); })\n" +
+      getter: "$browser.getPageSource()\n" +
         ".then(function (source) {",
       getterFinish: "})",
       cmp: "{source}",
       value: "source"
     },
     "Text": {
-      getter: ".then(function () { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
-        ".then(function (el) { return el.text(); })\n" +
+      getter: "$browser.findElement($driver.By.{locatorBy}({locator})).getText()\n" +
         ".then(function (text) {",
       getterFinish: "})",
       cmp: "{text}",
       value: "text"
     },
     "CurrentUrl": {
-      getter: ".then(function () { return $browser.getCurrentUrl(); })" +
+      getter: "$browser.getCurrentUrl()\n" +
         ".then(function (url) {",
       getterFinish: "})",
       cmp: "{url}",
       value: "url"
     },
     "Title": {
-      getter: ".then(function () { return $browser.getTitle(); })\n" +
+      getter: "$browser.getTitle()\n" +
         ".then(function (title) {",
       getterFinish: "})",
       cmp: "{title}",
       value: "title"
     },
     "ElementValue": {
-      getter: ".then(function () { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
-        ".then(function (el) { return $browser.getAttribute(el, 'value'); })" +
+      getter: "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+        ".then(function (el) { $browser.getAttribute(el, 'value') })\n" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "value"
     },
     "ElementAttribute": {
-      getter: ".then(function (el) { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
-        ".then(function (el) { return $browser.getAttribute(el, {attributeName}); })" +
+      getter: "$browser.findElement($driver.By.{locatorBy}({locator}))\n" +
+        ".then(function (el) { $browser.getAttribute(el, {attributeName}); })\n" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "value"
     },
     "CookieByName": {
-      getter: ".then(function (el) { return $browser.getCookies(); })\n" +
-        ".then(function (cookies) {\n" +
-        "  var cookie = _.find(cookies, function(e){ return e.name === {name}; });",
+      getter: "$browser.getCookie({name})\n" +
+        ".then(function (cookie) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "cookie"
     },
     "AlertText": {
-      getter: ".then(function (el) { return $browser.switchTo().alert().getText(); })" +
+      getter: "$browser.switchTo().alert().getText()\n" +
         ".then(function (text) {",
       getterFinish: "})",
       cmp: "{text}",
       value: "text"
     },
     "Eval": {
-      getter: ".then(function (el) { return $browser.executeScript({script}); })" +
+      getter: "$browser.executeScript({script})\n" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "value"
+    }
+  },
+  boolean_assert:
+    "{getter}\n" +
+    "  if ({posNot}{value}) {\n" +
+    "    $browser.quit(null);\n" +
+    "    throw new Error('{negNot}{stepTypeName} failed');\n" +
+    "  }\n" +
+    "{getterFinish};\n",
+  boolean_verify:
+    "{getter}\n" +
+    "  if ({posNot}{value}) {\n" +
+    "    $browser.quit(null);\n" +
+    "    console.log('{negNot}{stepTypeName} failed');\n" +
+    "  }\n" +
+    "{getterFinish};\n",
+  boolean_waitFor: 
+    "$browser.wait(function() {\n" +
+    "return {getter}\n" +
+    "  return {negNot}{value};\n" +
+    "{getterFinish} }, DefaultTimeout);\n",
+  boolean_store:
+    "{getter}\n" +
+    "  ${{variable}} = {value};\n" +
+    "{getterFinish};\n",
+  boolean_getters: {
+    "TextPresent": {
+      getter: "$browser.findElement($driver.By.tagName('html')).getText()\n" +
+      ".then(function (text) {\n" +
+      "  var bool = text.indexOf({text}) != -1;",
+      getterFinish: "})",
+      value: "bool"
+    },
+    "ElementPresent": {
+      getter: "$browser.isElementPresent($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (el) {",
+      getterFinish: "})",
+      value: "bool"
+    },
+    "ElementSelected": {
+      getter: "$browser.isSelected($driver.By.{locatorBy}({locator}))\n" +
+      ".then(function (bool) {",
+      getterFinish: "})",
+      value: "bool"
+    },
+    "CookiePresent": {
+      getter: "$browser.getCookie({name})\n" +
+        ".then(function (cookie) { return cookie != null })\n" +
+        ".then(function (bool) {",
+      getterFinish: "})",
+      value: "bool"
+    },
+    "AlertPresent": { // should return an error if it's not there (and true if it's there)
+      getter: "$browser.switchTo().alert()\n" +
+        ".then(function (bool) { return bool; }, function (err) { return false; })\n" +
+        ".then(function (bool) {",
+      getterFinish: "})",
+      value: "bool"
     }
   },
   locatorByForType: function(stepType, locatorType, locatorIndex) {
