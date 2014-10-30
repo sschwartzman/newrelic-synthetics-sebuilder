@@ -34,7 +34,7 @@ builder.selenium2.io.addLangFormatter({
     " */\n\n" +
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
-    "  ScriptVars = {},\n" +
+    "  VARS = {},\n" +
     "  DefaultTimeout = 10000;\n\n",
   end:
     "\nconsole.log('Browser script execution was a SUCCESS!');\n",
@@ -52,7 +52,7 @@ builder.selenium2.io.addLangFormatter({
     "print":
       "console.log({text});\n",
     "pause":
-      "$browser.wait({waitTime})\n",
+      "$browser.pause({waitTime})\n",
     "switchToFrame":
       "$browser.switchTo().frame('{identifier}');\n",
     "switchToFrameByIndex":
@@ -62,22 +62,20 @@ builder.selenium2.io.addLangFormatter({
     "switchToDefaultContent":
       "$browser.switchTo().defaultContent();\n",
     "assertAlertText":
-      "$browser.switchTo().alert().getText().then(function(text) {\n" +
-      "  return $browser.assertEquals(text, {text});\n" +
-      "});\n",
+      "assert.equal($browser.switchTo().alert().getText(), {text});\n",
     "verifyAlertText":
-      "$browser.switchTo().alert().getText().then(function(text) {\n" +
-      "  return text === {text};\n" +
-      "});\n",
+      "return $browser.switchTo().alert().getText() === {text};\n",
     "waitForAlertText":
       "$browser.wait(function() {\n" +
-      "  $browser.switchTo().alert().getText().then(function(text) {\n" +
-      "    return text === {text};\n" +
-      "  });\n" +
+      "  return $browser.switchTo().alert().getText() === {text};\n" +
       "}, DefaultTimeout);\n",
     "storeAlertText":
-      "$browser.switchTo().alert().getText().then(function(text) {\n" +
-      "  ScriptVars[{variable}] = '' + text;\n" +
+      "ScriptVars[{variable}] = '' + $browser.switchTo().alert().getText();\n",
+    "assertAlertPresent":
+      "$browser.switchTo().alert().then(function() {\n" +
+      "  assert.ok(true);\n" +
+      "}, function() {\n" +
+      "  assert.ok(false);\n" +
       "});\n",
     "verifyAlertPresent":
       "$browser.switchTo().alert().then(function() {\n" +
@@ -96,7 +94,7 @@ builder.selenium2.io.addLangFormatter({
       "  ScriptVars[{variable}] = false;\n" + 
       "});\n",
     "answerAlert":
-      "$browser.switchTo().alert().sendKeys({text});",
+      "$browser.switchTo().alert().sendKeys({text});\n",
     "acceptAlert":
       "$browser.switchTo().alert().accept();\n",
     "dismissAlert":
@@ -106,12 +104,13 @@ builder.selenium2.io.addLangFormatter({
     "clickElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).click();\n",
     "doubleClickElement":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).click();\n" +
-      "$browser.findElement($driver.By.{locatorBy}({locator})).click();\n",
+      "$browser.findElement($driver.By.{locatorBy}({locator})).doubleClick();\n",
     "mouseOverElement":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.{locatorBy}({locator})).mouseMove();\n",
     "clickElementWithOffset":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function (el) {\n" +
+      "  $browser.mouseMove(el, {offset});\n" +
+      "});\n",
     "setElementText":
       "$browser.findElement($driver.By.{locatorBy}({locator})).clear();\n" +
       "$browser.findElement($driver.By.{locatorBy}({locator})).sendKeys({text});\n",
@@ -132,11 +131,13 @@ builder.selenium2.io.addLangFormatter({
     "clearSelections":
       "$browser.findElement($driver.By.{locatorBy}({locator})).clear();\n",
     "dragToAndDropElement":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.{locatorBy}({locator})).then(function(el) {\n" +
+      "  $browser.dragAndDrop(el, {targetLocator})\n" +
+      "});",
     "clickAndHoldElement":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.{locatorBy}({locator})).mouseDown();\n",
     "releaseElement":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
+      "$browser.findElement($driver.By.{locatorBy}({locator})).mouseUp();\n",
     "submitElement":
       "$browser.findElement($driver.By.{locatorBy}({locator})).submit();\n", 
     "addCookie":
@@ -152,186 +153,22 @@ builder.selenium2.io.addLangFormatter({
       "$browser.deleteCookie({name});\n",
     "saveScreenshot":
       "$browser.takeScreenshot();\n",
-    "assertCurrentUrl":
-      "$browser.getCurrentUrl().then(function(url) {\n" +
-      "  return $browser.assertEquals(url, {url});\n" +
-      "});\n",
-    "verifyCurrentUrl":
-      "$browser.getCurrentUrl().then(function(url) {\n" +
-      "  return url === {url};\n" +
-      "});\n",
-    "waitForCurrentUrl":
-      "$browser.wait(function() {\n" +
-      "  $browser.getCurrentUrl().then(function(url) {\n" +
-      "    return url === {url};\n" +
-      "  });\n" +
-      "}, DefaultTimeout);\n",
-    "storeCurrentUrl":
-      "$browser.getCurrentUrl().then(function(url) {\n" +
-      "  ScriptVars[{variable}] = '' + url;\n" +
-      "});\n",
-    "assertTitle":
-      "$browser.getTitle().then(function(title) {\n" +
-      "  return $browser.assertEquals(title, {title});\n" +
-      "});\n",
-    "verifyTitle":
-      "$browser.getTitle().then(function(title) {\n" +
-      "  return title === {title};\n" +
-      "});\n",
-    "waitForTitle":
-      "$browser.wait(function() {\n" +
-      "  $browser.getTitle().then(function(title) {\n" +
-      "    return title === {title};\n" +
-      "  });\n" +
-      "}, DefaultTimeout);\n",
-    "storeTitle":
-      "$browser.getTitle().then(function(title) {\n" +
-      "  ScriptVars[{variable}] = '' + title;\n" +
-      "});\n",
-    "assertText":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).getText().then(function(text) {\n" +
-      "  return $browser.assertEquals(text, {text});\n" +
-      "});\n",
-    "verifyText":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).getText().then(function(text) {\n" +
-      "  return text === {text};\n" +
-      "});\n",
-    "waitForText":
-      "$browser.wait(function() {\n" +
-      "  $browser.findElement($driver.By.{locatorBy}({locator})).getText().then(function(text) {\n" +
-      "    return text === {text};\n" +
-      "  });\n" +
-      "}, DefaultTimeout);\n",
-    "storeText":
-      "$browser.findElement($driver.By.{locatorBy}({locator})).getText().then(function(text) {\n" +
-      "  ScriptVars[{variable}] = '' + text;\n" +
-      "});\n",
-    "assertTextPresent":
-      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
-      "  if(text.indexOf({text}) > -1) {\n" +
-      "    return assert.ok(true);\n" +
-      "  } else {\n" +
-      "    return assert.ok(false);\n" +
-      "  }\n" +
-      "});\n",
-    "verifyTextPresent":
-      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
-      "  if(text.indexOf({text}) > -1) {\n" +
-      "    return true;\n" +
-      "  } else {\n" +
-      "    return false;\n" +
-      "  }\n" +
-      "});\n",
-    "waitForTextPresent":
-      "$browser.wait(function() {\n" +
-      "  $$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
-      "    return text.indexOf({text}) > -1;\n" +
-      "  });\n" +
-      "}, DefaultTimeout);\n",
-    "storeTextPresent":
-      "$browser.findElement($driver.By.tagName('body')).getText().then(function(text) {\n" +
-      "  if(text.indexOf({text}) > -1) {\n" +
-      "    ScriptVars[{variable}] = true;\n" +
-      "  } else {\n" +
-      "    ScriptVars[{variable}] = false;\n" +
-      "  }\n" +
-      "});\n",
-    "assertBodyText":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyBodyText":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForBodyText":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeBodyText":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertPageSource":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyPageSource":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForPageSource":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storePageSource":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertElementPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyElementPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForElementPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeElementPresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertElementSelected":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyElementSelected":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForElementSelected":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeElementSelected":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertElementAttribute":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyElementAttribute":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForElementAttribute":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeElementAttribute":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertElementStyle":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyElementStyle":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForElementStyle":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeElementStyle":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertElementValue":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyElementValue":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForElementValue":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeElementValue":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertCookiePresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyCookiePresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForCookiePresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeCookiePresent":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertCookieByName":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyCookieByName":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForCookieByName":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeCookieByName":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "assertEval":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "verifyEval":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "waitForEval":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); },
-    "storeEval":
-      function(thing) { return print_nr_unsupported(JSON.stringify(thing)); }
   },
   waitFor: "",
   assert: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
         "{getter}\n" +
-        "  if (_.isEqual({value},{cmp})) {\n" +
-        "    b.quit();\n" +
+        "  if ({value} === {cmp}) {\n" +
+        "    $browser.quit();\n" +
         "    throw new Error('!{stepTypeName} failed');\n" +
         "  }\n" +
         "{getterFinish}\n", getter);
     } else {
       return doSubs(
         "{getter}\n" +
-        "  if (!_.isEqual({value}, {cmp})) {\n" +
-        "    b.quit();\n" +
+        "  if ({value} !== {cmp}) {\n" +
+        "    $browser.quit();\n" +
         "    throw new Error('{stepTypeName} failed');\n" +
         "  }\n" +
         "{getterFinish}\n", getter);
@@ -341,14 +178,14 @@ builder.selenium2.io.addLangFormatter({
     if (step.negated) {
       return doSubs(
         "{getter}\n" +
-        "  if (_.isEqual({value}, {cmp})) {\n" +
+        "  if ({value} === {cmp}) {\n" +
         "    console.log('!{stepTypeName} failed');\n" +
         "  }\n" +
         "{getterFinish}\n", getter);
     } else {
       return doSubs(
         "{getter}\n" +
-        "  if (!_.isEqual({value}, {cmp})) {\n" +
+        "  if ({value} !== {cmp}) {\n" +
         "    console.log('{stepTypeName} failed');\n" +
         "  }\n" +
         "{getterFinish}\n", getter);
@@ -361,14 +198,14 @@ builder.selenium2.io.addLangFormatter({
   boolean_assert:
     "{getter}\n" +
     "if ({posNot}{value}) {\n" +
-    "  b.quit(null);\n" +
+    "  $browser.quit(null);\n" +
     "  throw new Error('{negNot}{stepTypeName} failed');\n" +
     "}\n" +
     "{getterFinish}\n",
   boolean_verify:
     "{getter}\n" +
     "if ({posNot}{value}) {\n" +
-    "  b.quit(null);\n" +
+    "  $browser.quit(null);\n" +
     "  console.log('{negNot}{stepTypeName} failed');\n" +
     "}\n" +
     "{getterFinish}\n",
@@ -379,7 +216,7 @@ builder.selenium2.io.addLangFormatter({
     "{getterFinish}\n",
   boolean_getters: {
     "TextPresent": {
-      getter: ".then(function () { return b.elementByTagName('html'); })\n" +
+      getter: ".then(function () { return $driver.By.tagName('html'); })\n" +
       ".then(function (el) { return el.text(); })\n" +
       ".then(function (text) {\n" +
       "  var bool = text.indexOf({text}) != -1;",
@@ -387,27 +224,27 @@ builder.selenium2.io.addLangFormatter({
       value: "bool"
     },
     "ElementPresent": {
-      getter: ".then(function () { return b.hasElement({locatorBy},{locator}); })\n" +
+      getter: ".then(function () { return $browser.isElementPresent($driver.By.{locatorBy},{locator}); })\n" +
       ".then(function (el) {",
       getterFinish: "})",
       value: "bool"
     },
     "ElementSelected": {
-      getter: ".then(function () { return b.elementBy{locatorBy}({locator}); })\n" +
-      ".then(function (el) { return b.isSelected(el); })\n" +
+      getter: ".then(function () { return $browser.isElementPresent($driver.By.{locatorBy}({locator}); })\n" +
+      ".then(function (el) { return $browser.isSelected(el); })\n" +
       ".then(function (bool) {",
       getterFinish: "})",
       value: "bool"
     },
     "CookiePresent": {
-      getter: ".then(function () { return b.allCookies(); })\n" +
+      getter: ".then(function () { return $browser.getCookies(); })\n" +
         ".then(function (cookies) {\n" +
         "  var hasCookie = _.find(cookies, function(e){ return e.name === {name}; });",
       getterFinish: "})",
       value: "hasCookie"
     },
     "AlertPresent": { // should return an error if it's not there (and true if it's there)
-      getter: ".then(function () { return b.alertText(); })\n" +
+      getter: ".then(function () { return $browser.switchTo().alert(); })\n" +
         ".then(function (bool) { return bool; }, function (err) { return false; })\n" +
         ".then(function (bool) {",
       getterFinish: "})",
@@ -416,7 +253,7 @@ builder.selenium2.io.addLangFormatter({
   },
   getters: {
     "BodyText": {
-      getter: ".then(function () { return b.elementByTagName('html'); })\n" +
+      getter: ".then(function () { return $browser.findElement($driver.By.tagName('body')); })\n" +
         ".then(function (el) { return el.text(); })\n" +
         ".then(function (text) {",
       getterFinish: "})",
@@ -424,14 +261,14 @@ builder.selenium2.io.addLangFormatter({
       value: "text"
     },
     "PageSource": {
-      getter: ".then(function () { return b.source(); })\n" +
+      getter: ".then(function () { return $browser..getPageSource(); })\n" +
         ".then(function (source) {",
       getterFinish: "})",
       cmp: "{source}",
       value: "source"
     },
     "Text": {
-      getter: ".then(function () { return b.elementBy{locatorBy}({locator}); })\n" +
+      getter: ".then(function () { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
         ".then(function (el) { return el.text(); })\n" +
         ".then(function (text) {",
       getterFinish: "})",
@@ -439,37 +276,37 @@ builder.selenium2.io.addLangFormatter({
       value: "text"
     },
     "CurrentUrl": {
-      getter: ".then(function () { return b.url(); })" +
+      getter: ".then(function () { return $browser.getCurrentUrl(); })" +
         ".then(function (url) {",
       getterFinish: "})",
       cmp: "{url}",
       value: "url"
     },
     "Title": {
-      getter: ".then(function () { return b.title(); })\n" +
+      getter: ".then(function () { return $browser.getTitle(); })\n" +
         ".then(function (title) {",
       getterFinish: "})",
       cmp: "{title}",
       value: "title"
     },
     "ElementValue": {
-      getter: ".then(function () { return b.elementBy{locatorBy}({locator}); })\n" +
-        ".then(function (el) { return b.getAttribute(el, 'value'); })" +
+      getter: ".then(function () { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
+        ".then(function (el) { return $browser.getAttribute(el, 'value'); })" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "value"
     },
     "ElementAttribute": {
-      getter: ".then(function (el) { return b.elementBy{locatorBy}({locator}); })\n" +
-        ".then(function (el) { return b.getAttribute(el, {attributeName}); })" +
+      getter: ".then(function (el) { return $browser.findElement($driver.By.{locatorBy},{locator}); })\n" +
+        ".then(function (el) { return $browser.getAttribute(el, {attributeName}); })" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
       value: "value"
     },
     "CookieByName": {
-      getter: ".then(function (el) { return b.allCookies(); })\n" +
+      getter: ".then(function (el) { return $browser.getCookies(); })\n" +
         ".then(function (cookies) {\n" +
         "  var cookie = _.find(cookies, function(e){ return e.name === {name}; });",
       getterFinish: "})",
@@ -477,14 +314,14 @@ builder.selenium2.io.addLangFormatter({
       value: "cookie"
     },
     "AlertText": {
-      getter: ".then(function (el) { return b.alertText(); })" +
+      getter: ".then(function (el) { return $browser.switchTo().alert().getText(); })" +
         ".then(function (text) {",
       getterFinish: "})",
       cmp: "{text}",
       value: "text"
     },
     "Eval": {
-      getter: ".then(function (el) { return b.execute({script}); })" +
+      getter: ".then(function (el) { return $browser.executeScript({script}); })" +
         ".then(function (value) {",
       getterFinish: "})",
       cmp: "{value}",
