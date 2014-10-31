@@ -1,0 +1,13 @@
+{
+  "identifier": "nr_synthetics_formatter",
+  "headerVersion": 1,
+  "pluginVersion": "0.1",
+  "builderMinVersion": "2.0.0",
+  "name": "New Relic Synthetics Formatter",
+  "description": "Formatter for se-builder that generates javascript to use in New Relic Synthetics Scripted Browser tests.",
+  "siteUrl": "https://github.com/sschwartzman/newrelic-synthetics-sebuilder",
+  "icon": "newrelic_logo.png",
+  "load": [
+    "nr-synthetics.js"
+  ]
+}

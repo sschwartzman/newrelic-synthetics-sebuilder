@@ -1,5 +1,5 @@
 builder.selenium2.io.addLangFormatter({
-  name: "New Relic Synthetics - WebDriverJS",
+  name: "New Relic Synthetics (WebDriverJS)",
   extension: ".js",
   not: "!",
   start:
