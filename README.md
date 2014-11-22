@@ -11,9 +11,10 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
 
 1. Download & install [se-builder](http://sebuilder.github.io/se-builder/).
    * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
-   * Once installed, Se-builder will appear as a small icon in the Firefox add-ons toolbar. The icon looks like a Lego piece.
-2. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
-2. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. Here are some common locations for that:
+2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
+   * Se-builder will appear as a small icon that looks like a Lego piece in the Firefox add-ons toolbar. Click on that icon to load.
+3. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+4. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. Here are some common locations for that:
    * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
      Can't find the "Library" folder? If you need to open it:
      1. Open your Home folder in Finder.
@@ -21,8 +22,10 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
      3. Check the box next to Show Library Folder.
    * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
    * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder/plugins`
-3. Restart the se-builder if you have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
-
+5. Restart the se-builder if you still have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
+6. To verify that the plugin is loaded, click "Manage plugins" in the opening dialog box. You should see "New Relic Synthetics Formatter #.#  Installed" in the Plugins list.
+   * If it didn't load, try restarting Firefox entirely and then re-running Se-builder.
+   
 ## Using the Formatter
 
 1. Write, record or open a test. 
