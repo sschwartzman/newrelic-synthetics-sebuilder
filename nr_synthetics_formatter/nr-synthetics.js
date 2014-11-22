@@ -38,7 +38,7 @@ builder.selenium2.io.addLangFormatter({
     "    console.log('Step ' + thisStep + ': ' + elapsedSecs.toFixed(1) + 's: ' + msg);\n" +
     "    thisStep++;\n" +
     "};\n" +
-    "// 1st log is ignored for some reason, so this is a dummy\n" +
+    "// 1st log is sometimes ignored for some reason, so this is a dummy that advances to step 1\n" +
     "log('init');\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
