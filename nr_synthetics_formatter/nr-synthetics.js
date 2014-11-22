@@ -30,9 +30,9 @@ builder.selenium2.io.addLangFormatter({
     "/** HELPER FUNCTIONS **/\n\n" +
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
-    "  VARS = {},\n" +
     "  startTime = new Date(),\n" +
-    "  thisStep = 0;\n" +
+    "  thisStep = 0,\n" +
+    "  VARS = {};\n" +
     "var log = function(msg) {\n" +
     "    var elapsedSecs = (new Date() - startTime) / 1000.0;\n" +
     "    console.log('Step ' + thisStep + ': ' + elapsedSecs.toFixed(1) + 's: ' + msg);\n" +
@@ -54,7 +54,12 @@ builder.selenium2.io.addLangFormatter({
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n",
   end:
-    ".then(function() { log('Browser script execution was a SUCCESS!'); });\n\n" +
+    ".then(function() {\n" +
+    "  log('Browser script execution SUCCEEDED.');\n" +
+    "}, function(err) {\n" +
+    "  log ('Browser script execution FAILED.');\n" +
+    "  throw(err);\n" +
+    "});\n\n" +
     "/** END OF SCRIPT **/",
   lineForType: {
     "get":
@@ -129,8 +134,7 @@ builder.selenium2.io.addLangFormatter({
     "setElementNotSelected":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout);\n" +
-	  "})\n\n" +
+	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function(el) { return el.isSelected(); })\n" +
       ".then(function (bool) { if(bool) { return $browser.findElement(By.{locatorBy}({locator})).click(); } })\n\n",
     "clearSelections":
@@ -202,20 +206,14 @@ builder.selenium2.io.addLangFormatter({
         ".then(function () {\n" +
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
-        "  if ({value} == {cmp}) {\n" +
-        "    $browser.quit();\n" +
-        "    throw new Error('!{stepTypeName} failed');\n" +
-        "  }\n" +
+        "    assert.notEqual({value}, {cmp}, '!{stepTypeName} failed');\n" +
         "{getterFinish}", getter);
     } else {
       return doSubs(
         ".then(function () {\n" +
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
-        "  if ({value} != {cmp}) {\n" +
-        "    $browser.quit();\n" +
-        "    throw new Error('{stepTypeName} failed');\n" +
-        "  }\n" +
+        "    assert.equal({value}, {cmp}, '{stepTypeName} failed');\n" +
         "{getterFinish}", getter);
     }
   },
@@ -327,10 +325,7 @@ builder.selenium2.io.addLangFormatter({
     ".then(function () {\n" + 
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  {getter}.then(function (bool) {\n" +
-    "    if ({posNot}bool) {\n" +
-    "      $browser.quit(null);\n" +
-    "      throw new Error('{negNot}{stepTypeName} failed');\n" +
-    "    }\n" +
+    "    assert.ok(({negNot}bool), '{stepTypeName} failed');\n" +
     "  });\n" +
     "{getterFinish}",
   boolean_verify:
