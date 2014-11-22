@@ -38,7 +38,7 @@ builder.selenium2.io.addLangFormatter({
     "    console.log('Step ' + thisStep + ': ' + elapsedSecs.toFixed(1) + 's: ' + msg);\n" +
     "    thisStep++;\n" +
     "};\n" +
-    "// 1st log is sometimes ignored for some reason, so this is a dummy that advances to step 1\n" +
+    "// 1st log is sometimes ignored for some reason, so this is a dummy\n" +
     "log('init');\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
@@ -52,7 +52,9 @@ builder.selenium2.io.addLangFormatter({
     "    return wholetext.indexOf(text) != -1;\n" +
     "  });\n" +
     "}\n\n" +
-    "/** BEGINNING OF SCRIPT **/\n\n",
+    "/** BEGINNING OF SCRIPT **/\n\n" +
+    "// Get browser capabilities and do nothing with it, so that we start with a then-able command\n" +
+    "$browser.getCapabilities().then(function () { })\n\n",
   end:
     ".then(function() {\n" +
     "  log('Browser script execution SUCCEEDED.');\n" +
@@ -63,8 +65,10 @@ builder.selenium2.io.addLangFormatter({
     "/** END OF SCRIPT **/",
   lineForType: {
     "get":
-      "log('get {url}');\n" +
-	  "$browser.get({url})\n\n",
+      ".then(function () {\n" +
+	  "  log('{stepTypeName} {url}');\n" +
+	  "  return $browser.get({url});\n" +
+	  "})\n\n",
     "refresh":
       function(step) { return scriptify("$browser.navigate().refresh()"); },
     "goBack":
