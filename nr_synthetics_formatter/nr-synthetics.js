@@ -294,6 +294,14 @@ builder.selenium2.io.addLangFormatter({
       cmp: "{value}",
       value: "value"
     },
+    "ElementStyle": {
+      getter: "return $browser.findElement($driver.By.{locatorBy}({locator})); })\n" +
+      "  .then(function (el) { return el.getCssValue({propertyName}); })\n" +
+      "  .then(function (value) {",
+      getterFinish: "})\n\n",
+      cmp: "{value}",
+      value: "value"
+    },   
     "ElementAttribute": {
       getter: "return $browser.findElement($driver.By.{locatorBy}({locator})); })\n" +
       "  .then(function (el) { return el.getAttribute({attributeName}); })\n" +
