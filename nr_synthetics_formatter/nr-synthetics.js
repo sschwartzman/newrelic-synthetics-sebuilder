@@ -25,8 +25,12 @@ builder.selenium2.io.addLangFormatter({
     " * Feel free to explore, or check out the full documentation for details:\n" +
     " * https://docs.newrelic.com/docs/synthetics/new-relic-synthetics/scripting-monitors/writing-scripted-browsers\n" +
     " */\n\n" +
+    "/** CONFIGURATIONS **/\n\n" +
     "// Script-wide timeout for wait and waitAndFind functions (in ms)\n" +
-    "var DefaultTimeout = 10000;\n\n"  +
+    "var DefaultTimeout = 10000;\n" +
+    "// Change to any User Agent you want to use.\n" +
+    "// Leave as \"default\" or empty to use the Synthetics default.\n" +
+    "var UserAgent = \"default\";\n\n" +
     "/** HELPER FUNCTIONS **/\n\n" +
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
@@ -53,6 +57,11 @@ builder.selenium2.io.addLangFormatter({
     "  });\n" +
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
+    "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
+    "if ((typeof UserAgent !== 'undefined') && (UserAgent != 'default')) {\n" +
+    "  $browser.addHeader('User-Agent', UserAgent);\n" +
+    "  log('Setting User-Agent to ' + UserAgent);\n" +
+    "}\n\n" +
     "// Get browser capabilities and do nothing with it, so that we start with a then-able command\n" +
     "$browser.getCapabilities().then(function () { })\n\n",
   end:
@@ -354,8 +363,8 @@ builder.selenium2.io.addLangFormatter({
     ".then(function () {\n" +
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  $browser.wait(function () {\n" +
-    "     return {getter}.then(function (bool) { return {negNot}bool; })\n" +
-    "  }, DefaultTimeout)\n" +
+    "     return {getter}.then(function (bool) { return {negNot}bool; });\n" +
+    "  }, DefaultTimeout);\n" +
     "})\n\n",
   boolean_store:
     ".then(function () {\n" + 
