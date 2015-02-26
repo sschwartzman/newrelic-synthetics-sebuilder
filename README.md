@@ -14,7 +14,9 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
    * Se-builder will appear as a small icon that looks like a Lego piece in the Firefox add-ons toolbar. Click on that icon to load.
 3. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
-4. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. Here are some common locations for that:
+4. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. 
+   * NOTE: The zip contains a folder called "nr_synthetics_formatter". Move the FOLDER with enclosed files into the plugins directory, rather than moving the files themselves without the folder.
+   * Here are some common locations for the plugins directory across different OSes:
    * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
      Can't find the "Library" folder? If you need to open it:
      1. Open your Home folder in Finder.
