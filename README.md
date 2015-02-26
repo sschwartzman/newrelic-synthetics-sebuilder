@@ -15,17 +15,18 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
    * Se-builder will appear as a small icon that looks like a Lego piece in the Firefox add-ons toolbar. Click on that icon to load.
 3. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
 4. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. 
-   * NOTE: The zip contains a folder called "nr_synthetics_formatter". Move the FOLDER with enclosed files into the plugins directory, rather than moving the files themselves without the folder.
+   * **NOTE:** The zip contains a folder called `nr_synthetics_formatter`. Move the **FOLDER with enclosed files** into the plugins directory, rather than moving the files themselves without the folder.
    * Here are some common locations for the plugins directory across different OSes:
-   * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
-     Can't find the "Library" folder? If you need to open it:
-     1. Open your Home folder in Finder.
-     2. Right-click in the finder window and click "Show View Options", or open it by pressing ⌘-J.
-     3. Check the box next to Show Library Folder.
-   * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
-   * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder/plugins`
+     * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
+       Can't find the "Library" folder? If you need to open it:
+        1. Open your Home folder in Finder.
+        2. Right-click in the finder window and click "Show View Options", or open it by pressing ⌘-J.
+        3. Check the box next to Show Library Folder.
+     * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
+     * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder/plugins`
 5. Restart the se-builder if you still have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
 6. To verify that the plugin is loaded, click "Manage plugins" in the opening dialog box. You should see "New Relic Synthetics Formatter #.#  Installed" in the Plugins list.
+   * *If the Manage Plugins page throws an error, don't fret!* This may be a issue with se-builder that doesn't impact the plugin. If it does happen, try recording a simple script and exporting it. If you see "New Relic Synthetics (WebDriverJS)" in the File -> Export dialog, the plugin is working properly.
    * If it didn't load, try restarting Firefox entirely and then re-running Se-builder.
    
 ## Using the Formatter
