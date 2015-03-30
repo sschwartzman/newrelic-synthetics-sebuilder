@@ -33,7 +33,6 @@ builder.selenium2.io.addLangFormatter({
     "var UserAgent = \"default\";\n\n" +
     "/** HELPER FUNCTIONS **/\n\n" +
     "var assert = require('assert'),\n" +
-    "  actions = $browser.actions(),\n" +
     "  By = $driver.By,\n" +
     "  startTime = new Date(),\n" +
     "  thisStep = 0,\n" +
@@ -111,24 +110,24 @@ builder.selenium2.io.addLangFormatter({
 	  ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { actions.click(el).perform(); })\n\n",
+	  ".then(function (el) { $browser.actions().click(el).perform(); })\n\n",
     "doubleClickElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { actions.doubleClick(el).perform(); })\n\n",
+	  ".then(function (el) { $browser.actions().doubleClick(el).perform(); })\n\n",
     "mouseOverElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { actions.mouseMove(el).perform(); })\n\n",
+	  ".then(function (el) { $browser.actions().mouseMove(el).perform(); })\n\n",
     "clickElementWithOffset":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function (el) {\n" +
-	  "  actions.mouseMove(el, {offset}).perform();\n" +
-	  "  actions.click().perform(); })\n\n",
+	  "  $browser.actions().mouseMove(el, {offset}).perform();\n" +
+	  "  $browser.actions().click().perform(); })\n\n",
     "setElementText":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
@@ -146,13 +145,13 @@ builder.selenium2.io.addLangFormatter({
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function(el) { return el.isSelected(); })\n" +
-	  ".then(function (bool) { if(!bool) { actions.click(By.{locatorBy}({locator})).perform(); } })\n\n",
+	  ".then(function (bool) { if(!bool) { $browser.actions().click(By.{locatorBy}({locator})).perform(); } })\n\n",
     "setElementNotSelected":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function(el) { return el.isSelected(); })\n" +
-      ".then(function (bool) { if(bool) { actions.click(By.{locatorBy}({locator})).perform(); } })\n\n",
+      ".then(function (bool) { if(bool) { $browser.actions().click(By.{locatorBy}({locator})).perform(); } })\n\n",
     "clearSelections":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
@@ -162,17 +161,17 @@ builder.selenium2.io.addLangFormatter({
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-      ".then(function (el) { actions.dragAndDrop(el, {targetLocator}).perform(); })\n\n",
+      ".then(function (el) { $browser.actions().dragAndDrop(el, {targetLocator}).perform(); })\n\n",
     "clickAndHoldElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { actions.mouseDown(el).perform(); })\n\n",
+	  ".then(function (el) { $browser.actions().mouseDown(el).perform(); })\n\n",
     "releaseElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { actions.mouseUp(el).perform(); })\n\n",
+	  ".then(function (el) { $browser.actions().mouseUp(el).perform(); })\n\n",
     "submitElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
