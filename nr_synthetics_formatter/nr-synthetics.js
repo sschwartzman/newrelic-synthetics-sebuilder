@@ -20,7 +20,6 @@ builder.selenium2.io.addLangFormatter({
     " *     $driver - Main WebDriver public API module\n" +
     " *     $http - 'request' node.js module (for making HTTP requests)\n" +
     " *     $util - Common tools to aid with grunt work\n" +
-    " *     $Synthetics - The main Synthetics API module\n" +
     " *\n" +
     " * Feel free to explore, or check out the full documentation for details:\n" +
     " * https://docs.newrelic.com/docs/synthetics/new-relic-synthetics/scripting-monitors/writing-scripted-browsers\n" +
@@ -50,6 +49,7 @@ builder.selenium2.io.addLangFormatter({
     "    return true;\n" +
     "  } catch (err) { return false; }\n" +
     "}\n" +
+    "function isElementSelected(el) { return $browser.findElement(el).isSelected(); }\n" + 
     "function isTextPresent(text) {\n" +
     "  return $browser.findElement(By.tagName('html')).getText()\n" +
     "  .then(function (wholetext) {\n" +
@@ -126,8 +126,7 @@ builder.selenium2.io.addLangFormatter({
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function (el) {\n" +
-	  "  $browser.actions().mouseMove(el, {offset}).perform();\n" +
-	  "  $browser.actions().click().perform(); })\n\n",
+	  "  $browser.actions().mouseMove(el, {offset}).click().perform(); })\n\n",
     "setElementText":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
@@ -145,13 +144,13 @@ builder.selenium2.io.addLangFormatter({
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function(el) { return el.isSelected(); })\n" +
-	  ".then(function (bool) { if(!bool) { $browser.actions().click(By.{locatorBy}({locator})).perform(); } })\n\n",
+	  ".then(function(bool) { if (!bool) { $browser.actions().click($browser.findElement(By.{locatorBy}({locator}))).perform(); } })\n\n",
     "setElementNotSelected":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
 	  ".then(function(el) { return el.isSelected(); })\n" +
-      ".then(function (bool) { if(bool) { $browser.actions().click(By.{locatorBy}({locator})).perform(); } })\n\n",
+	  ".then(function(bool) { if (bool) { $browser.actions().click($browser.findElement(By.{locatorBy}({locator}))).perform(); } })\n\n",
     "clearSelections":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
@@ -240,6 +239,7 @@ builder.selenium2.io.addLangFormatter({
         "  {getter}\n" +
         "  if ({value} == {cmp}) {\n" +
         "    console.log('!{stepTypeName} failed');\n" +
+        "    $browser.takeScreenshot();\n" +
         "  }\n" +
         "{getterFinish}", getter);
     } else {
@@ -249,6 +249,7 @@ builder.selenium2.io.addLangFormatter({
         "  {getter}\n" +
         "  if ({value} != {cmp}) {\n" +
         "    console.log('{stepTypeName} failed');\n" +
+        "    $browser.takeScreenshot();\n" +
         "  }\n" +
         "{getterFinish}", getter);
     }
@@ -356,8 +357,8 @@ builder.selenium2.io.addLangFormatter({
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  {getter}.then(function (bool) {\n" +
     "    if ({posNot}bool) {\n" +
-    "      $browser.quit(null);\n" +
     "      log('{negNot}{stepTypeName} failed');\n" +
+    "      $browser.takeScreenshot();\n" +
     "    }\n" +
     "  });\n" +
     "{getterFinish}",
@@ -370,7 +371,8 @@ builder.selenium2.io.addLangFormatter({
     "})\n\n",
   boolean_store:
     ".then(function () {\n" + 
-    "  ${{variable}} = {getter};\n" +
+    "  log('{stepTypeName} ${{variable}}');\n" +
+    "  {getter}.then(function (bool) { ${{variable}} = bool; });\n" +
     "{getterFinish}",
   boolean_getters: {
     "TextPresent": {
@@ -384,7 +386,7 @@ builder.selenium2.io.addLangFormatter({
       value: "{locator}"
     },
     "ElementSelected": {
-      getter: "$browser.findElement(By.{locatorBy}({locator})).isSelected()",
+      getter: "isElementSelected(By.{locatorBy}({locator}))",
       getterFinish: "})\n\n",
       value: "{locator}"
     },
