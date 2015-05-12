@@ -1,7 +1,7 @@
-New Relic Synthetics<br>Formatter for Se-Builder
+New Relic Synthetics<br>formatter for Se-builder
 ==============================
 
-Formatter for se-builder - generates javascript to use in New Relic Synthetics Scripted Browser tests.
+Plugin (formatter) for Se-builder that generates javascript from Se-builder scripts to use in New Relic Synthetics Scripted Browser tests.
 
 ## Download the plugin
 
@@ -52,13 +52,13 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
 
 ## Can't find the plugins directory?
 
-Here are some common locations for the plugins directory across different OSes:
+Here are some common locations for the plugins directory:
 
   * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
   * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
   * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder/plugins`
   
-Can't find the "Library" folder on your Mac? If you need to open it:
+##### Can't find the "Library" folder on your Mac? If you need to open it:
 
   1. Open your Home folder in Finder.
   2. Right-click in the finder window and click "Show View Options", or open it by pressing ⌘-J.
