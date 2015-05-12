@@ -50,7 +50,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
   * The error messages and logs returned when you ran/validated your script
 * *Please be patient!* Unfortunately, maintaining this script is not my day job, but I will get to your issue as soon as I can.
 
-## Can't find the plugins directory?
+### Can't find the plugins directory?
 
 Here are some common locations for the plugins directory:
 
