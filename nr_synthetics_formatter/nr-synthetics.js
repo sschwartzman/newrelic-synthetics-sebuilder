@@ -53,8 +53,8 @@ builder.selenium2.io.addLangFormatter({
     "function isTextPresentIn(text, sourceEl) {\n" +
     "  return sourceEl.getText()\n" +
     "  .then(function (wholetext) {\n" +
-    "    log("Assert Text Present: '\" + text +\"'\");\n" +
-    "    assert.notEqual(wholetext.indexOf(text), -1, "Text Not Found: '\" + text + \"'\");\n" +
+    "    log(\"Assert Text Present: '\" + text +\"'\");\n" +
+    "    assert.notEqual(wholetext.indexOf(text), -1, \"Text Not Found: '\" + text + \"'\");\n" +
     "  });\n" +
     "}\n\n" +
     "function isTextPresent(text) {\n" +
