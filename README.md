@@ -1,5 +1,4 @@
-New Relic Synthetics
-Formatter for Se-Builder
+New Relic Synthetics<br>Formatter for Se-Builder
 ==============================
 
 Formatter for se-builder - generates javascript to use in New Relic Synthetics Scripted Browser tests.
@@ -20,7 +19,7 @@ Formatter for se-builder - generates javascript to use in New Relic Synthetics S
 1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
 2. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. 
    * **NOTE:** The zip contains a folder called `nr_synthetics_formatter`. Move the **FOLDER with enclosed files** into the plugins directory, rather than moving the files themselves without the folder.
-   * Can't find the destination folder? Check [Here](#cant-find-the-plugins-directory)
+   * Can't find the Se-builder plugins directory? [Check here](#cant-find-the-plugins-directory)
 3. Restart the se-builder if you still have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
 4. To verify that the plugin is loaded, click "Manage plugins" in the opening dialog box. You should see "New Relic Synthetics Formatter #.#  Installed" in the Plugins list.
    * *If the Manage Plugins page throws an error, don't fret!* This may be a issue with se-builder that doesn't impact the plugin. If it does happen, try recording a simple script and exporting it. If you see "New Relic Synthetics (WebDriverJS)" in the File -> Export dialog, the plugin is working properly.
