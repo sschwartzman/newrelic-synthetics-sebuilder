@@ -93,7 +93,7 @@ builder.selenium2.io.addLangFormatter({
     "print":
       ".then(function () { log('{text}'); })\n\n",
     "pause":
-      function(step) { return scriptify("$browser.sleep( " + step.waitTime + "})"); },
+      function(step) { return scriptify("$browser.sleep( " + step.waitTime + ")"); },
     "switchToFrame":
       function(step) { return scriptify("$browser.switchTo().frame('" + step.identifier + "')"); },
     "switchToFrameByIndex":
