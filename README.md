@@ -7,7 +7,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 [Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
 
-## Install the pre-requisites
+## Install the prerequisites
 
 1. Download & install [se-builder](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
    * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
