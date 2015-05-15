@@ -16,7 +16,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## Install the plugin
 
-1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
 2. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. 
    * **NOTE:** The zip contains a folder called `nr_synthetics_formatter`. Move the **FOLDER with enclosed files** into the plugins directory, rather than moving the files themselves without the folder.
    * Can't find the Se-builder plugins directory? [Check here](#cant-find-the-plugins-directory)
