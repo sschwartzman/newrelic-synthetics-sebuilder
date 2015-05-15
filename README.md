@@ -5,7 +5,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## Download the plugin
 
-[Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+[Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
 
 ## Install the pre-requisites
 
