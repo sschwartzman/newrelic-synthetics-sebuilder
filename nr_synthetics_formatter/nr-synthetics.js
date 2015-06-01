@@ -114,7 +114,7 @@ builder.selenium2.io.addLangFormatter({
 	  ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { $browser.actions().click(el).perform(); })\n\n",
+	  ".then(function (el) { el.click() })\n\n",
     "doubleClickElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
@@ -147,14 +147,16 @@ builder.selenium2.io.addLangFormatter({
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function(el) { return el.isSelected(); })\n" +
-	  ".then(function(bool) { if (!bool) { $browser.actions().click($browser.findElement(By.{locatorBy}({locator}))).perform(); } })\n\n",
+	  ".then(function(el) { el.isSelected()\n" +
+	  "  .then(function(bool) { if (!bool) { el.click(); } });\n" +
+	  "})\n\n",
     "setElementNotSelected":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function(el) { return el.isSelected(); })\n" +
-	  ".then(function(bool) { if (bool) { $browser.actions().click($browser.findElement(By.{locatorBy}({locator}))).perform(); } })\n\n",
+	  ".then(function(el) { el.isSelected()\n" +
+	  "  .then(function(bool) { if (bool) { el.click(); } });\n" +
+	  "})\n\n",
     "clearSelections":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
