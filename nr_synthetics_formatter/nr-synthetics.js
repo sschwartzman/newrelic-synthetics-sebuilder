@@ -114,7 +114,7 @@ builder.selenium2.io.addLangFormatter({
 	  ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
 	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { el.click() })\n\n",
+	  ".then(function (el) { el.click(); })\n\n",
     "doubleClickElement":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {locator}');\n" +
