@@ -33,15 +33,26 @@ builder.selenium2.io.addLangFormatter({
     "/** HELPER FUNCTIONS **/\n\n" +
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
-    "  startTime = new Date(),\n" +
     "  thisStep = 0,\n" +
+    "  startTime = Date.now(),\n" +
+    "  stepStartTime = Date.now(),\n" +
+    "  totalElapsedTime = 0,\n" +
+    "  lastMsg = '',\n" +
     "  VARS = {};\n" +
+    "\n" +    
     "var log = function(msg) {\n" +
-    "    var elapsedSecs = (new Date() - startTime) / 1000.0;\n" +
-    "    console.log('Step ' + thisStep + ': ' + elapsedSecs.toFixed(1) + 's: ' + msg);\n" +
-    "    thisStep++;\n" +
-    "};\n" +
-    "// 1st log is sometimes ignored for some reason, so this is a dummy\n" +
+    "   totalElapsedTime = Date.now() - startTime;\n" +
+    "   if (thisStep > 0) {\n" +
+    "     var lastStepTimeElapsed = totalElapsedTime - stepStartTime;\n" +
+    "     console.log('Step ' + thisStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
+    "     $util.insights.set('Step ' + thisStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
+    "   }\n" +
+    "   thisStep++;\n" +
+    "   stepStartTime = Date.now() - startTime;\n" +
+    "   console.log('Step ' + thisStep + ': ' + msg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
+    "   lastMsg = msg;\n" +
+   " };\n" +
+    "\n" +
     "log('init');\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
@@ -53,8 +64,7 @@ builder.selenium2.io.addLangFormatter({
     "function isTextPresentIn(text, sourceEl) {\n" +
     "  return sourceEl.getText()\n" +
     "  .then(function (wholetext) {\n" +
-    "    log(\"Assert Text Present: '\" + text +\"'\");\n" +
-    "    assert.notEqual(wholetext.indexOf(text), -1, \"Text Not Found: '\" + text + \"'\");\n" +
+    "    return wholetext.indexOf(text) != -1;\n" +
     "  });\n" +
     "}\n\n" +
     "function isTextPresent(text) {\n" +
@@ -64,19 +74,20 @@ builder.selenium2.io.addLangFormatter({
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
     "if ((typeof UserAgent !== 'undefined') && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
-    "  log('Setting User-Agent to ' + UserAgent);\n" +
+    "  console.log('Setting User-Agent to ' + UserAgent);\n" +
     "}\n\n" +
     "// Get browser capabilities and do nothing with it, so that we start with a then-able command\n" +
     "$browser.getCapabilities().then(function () { })\n\n",
   end:
     ".then(function() {\n" +
-    "  log('Browser script execution SUCCEEDED.');\n" +
+    "  console.log('Browser script execution SUCCEEDED.');\n" +
     "}, function(err) {\n" +
-    "  log ('Browser script execution FAILED.');\n" +
+    "  console.log ('Browser script execution FAILED.');\n" +
     "  throw(err);\n" +
     "});\n\n" +
     "/** END OF SCRIPT **/",
-  lineForType: {
+    
+lineForType: {
     "get":
       ".then(function () {\n" +
 	  "  log('{stepTypeName} {url}');\n" +
@@ -91,7 +102,7 @@ builder.selenium2.io.addLangFormatter({
     "close":
       "",
     "print":
-      ".then(function () { log('{text}'); })\n\n",
+      ".then(function () { console.log({text}); })\n\n",
     "pause":
       function(step) { return scriptify("$browser.sleep( " + step.waitTime + ")"); },
     "switchToFrame":
@@ -363,7 +374,7 @@ builder.selenium2.io.addLangFormatter({
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  {getter}.then(function (bool) {\n" +
     "    if ({posNot}bool) {\n" +
-    "      log('{negNot}{stepTypeName} failed');\n" +
+    "      console.log('{negNot}{stepTypeName} failed');\n" +
     "      $browser.takeScreenshot();\n" +
     "    }\n" +
     "  });\n" +
