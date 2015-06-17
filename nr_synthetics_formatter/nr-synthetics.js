@@ -30,20 +30,18 @@ builder.selenium2.io.addLangFormatter({
     "// Change to any User Agent you want to use.\n" +
     "// Leave as \"default\" or empty to use the Synthetics default.\n" +
     "var UserAgent = \"default\";\n\n" +
-    "/** HELPER FUNCTIONS **/\n\n" +
+    "/** HELPER VARIABLES AND FUNCTIONS **/\n\n" +
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
+    "  browser = $browser.manage(),\n" +
     "  thisStep = 0,\n" +
     "  startTime = Date.now(),\n" +
     "  stepStartTime = Date.now(),\n" +
-    "  totalElapsedTime = 0,\n" +
     "  lastMsg = '',\n" +
-    "  VARS = {};\n" +
-    "\n" +    
+    "  VARS = {};\n\n" +    
     "var log = function(msg) {\n" +
-    "   totalElapsedTime = Date.now() - startTime;\n" +
     "   if (thisStep > 0) {\n" +
-    "     var lastStepTimeElapsed = totalElapsedTime - stepStartTime;\n" +
+    "     var lastStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
     "     console.log('Step ' + thisStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
     "     $util.insights.set('Step ' + thisStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
     "   }\n" +
@@ -51,15 +49,14 @@ builder.selenium2.io.addLangFormatter({
     "   stepStartTime = Date.now() - startTime;\n" +
     "   console.log('Step ' + thisStep + ': ' + msg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
     "   lastMsg = msg;\n" +
-   " };\n" +
-    "\n" +
+    " };\n\n" +
     "log('init');\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
     "    var thisAlert = $browser.switchTo().alert();\n" +
     "    return true;\n" +
     "  } catch (err) { return false; }\n" +
-    "}\n" +
+    "}\n\n" +
     "function isElementSelected(el) { return $browser.findElement(el).isSelected(); }\n" + 
     "function isTextPresentIn(text, sourceEl) {\n" +
     "  return sourceEl.getText()\n" +
@@ -72,7 +69,7 @@ builder.selenium2.io.addLangFormatter({
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
-    "if ((typeof UserAgent !== 'undefined') && (UserAgent != 'default')) {\n" +
+    "if (UserAgent && (0 !== UserAgent.trim().length) && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
     "  console.log('Setting User-Agent to ' + UserAgent);\n" +
     "}\n\n" +
@@ -202,11 +199,11 @@ lineForType: {
         });
         return ".then(function () {\n" +
         "  log('addCookie " + data['name'] + ", " + data['value'] + "');\n" +
-	    "  $browser.manage().addCookie('" + data['name'] + "', '" + data['value'] + "');\n" +
+	    "  browser.addCookie('" + data['name'] + "', '" + data['value'] + "');\n" +
 	    "})\n\n";
       },
     "deleteCookie":
-      function(step) { return scriptify("$browser.manage().deleteCookie(\"" + step.name + "\")"); },
+      function(step) { return scriptify("browser.deleteCookie(\"" + step.name + "\")"); },
     "saveScreenshot":
       function(step) { return scriptify("$browser.takeScreenshot()"); },
   },
@@ -237,14 +234,14 @@ lineForType: {
         ".then(function () {\n" +
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
-        "    assert.notEqual({value}, {cmp}, '!{stepTypeName} failed');\n" +
+        "    assert.notEqual({value}, {cmp}, '{stepTypeName} {negNot}{cmp} FAILED.');\n" +
         "{getterFinish}", getter);
     } else {
       return doSubs(
         ".then(function () {\n" +
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
-        "    assert.equal({value}, {cmp}, '{stepTypeName} failed');\n" +
+        "    assert.equal({value}, {cmp}, '{stepTypeName} {negNot}{cmp} FAILED.');\n" +
         "{getterFinish}", getter);
     }
   },
@@ -255,8 +252,10 @@ lineForType: {
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "  if ({value} == {cmp}) {\n" +
-        "    console.log('!{stepTypeName} failed');\n" +
+        "    console.log('{stepTypeName} {negNot}{cmp} FAILED.');\n" +
         "    $browser.takeScreenshot();\n" +
+        "  } else {\n" +
+        "    console.log('{stepTypeName} {negNot}{cmp} SUCCEEDED.');\n" +
         "  }\n" +
         "{getterFinish}", getter);
     } else {
@@ -265,8 +264,10 @@ lineForType: {
         "  log('{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "  if ({value} != {cmp}) {\n" +
-        "    console.log('{stepTypeName} failed');\n" +
+        "    console.log('{stepTypeName} {negNot}{cmp} FAILED');\n" +
         "    $browser.takeScreenshot();\n" +
+        "  } else {\n" +
+        "    console.log('{stepTypeName} {negNot}{cmp} SUCCEEDED.');\n" +
         "  }\n" +
         "{getterFinish}", getter);
     }
@@ -275,7 +276,7 @@ lineForType: {
     ".then(function () {\n" +
     "  log('{stepTypeName} ${{variable}}');\n" +
     "  {getter}\n" +
-    "  ${{variable}} = '' + {value};\n" +
+    "  ${{variable}} = {value};\n" +
     "{getterFinish}",
   getters: {    
     "BodyText": {
@@ -340,11 +341,12 @@ lineForType: {
       value: "value"
     },
     "CookieByName": {
-      getter: "return $browser.manage().getCookie({name}); })\n" +
-      "  .then(function (cookie) {",
+      getter: "return browser.getCookie({name}); })\n" +
+      "  .then(function (cookie) { return cookie.value; })\n" +
+      "  .then(function (value) {",
       getterFinish: "})\n\n",
       cmp: "{value}",
-      value: "cookie"
+      value: "value"
     },
     "AlertText": {
       getter: "return $browser.switchTo().alert(); })\n" +
@@ -366,7 +368,7 @@ lineForType: {
     ".then(function () {\n" + 
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  {getter}.then(function (bool) {\n" +
-    "    assert.ok(({negNot}bool), '{stepTypeName} failed');\n" +
+    "    assert.ok(({negNot}bool), '{stepTypeName} FAILED.');\n" +
     "  });\n" +
     "{getterFinish}",
   boolean_verify:
@@ -374,8 +376,10 @@ lineForType: {
     "  log('{stepTypeName} {negNot}{value}');\n" +
     "  {getter}.then(function (bool) {\n" +
     "    if ({posNot}bool) {\n" +
-    "      console.log('{negNot}{stepTypeName} failed');\n" +
+    "      console.log('{stepTypeName} FAILED.');\n" +
     "      $browser.takeScreenshot();\n" +
+    "    } else {\n" +
+    "      console.log('{stepTypeName} SUCCEEDED.');\n" +
     "    }\n" +
     "  });\n" +
     "{getterFinish}",
@@ -408,7 +412,7 @@ lineForType: {
       value: "{locator}"
     },
     "CookiePresent": {
-      getter: "$browser.manage().getCookie({name})",
+      getter: "browser.getCookie({name}).then(function (cookie) { return cookie !== null; })",
       getterFinish: "})\n\n",
       value: "{name}"
     },
