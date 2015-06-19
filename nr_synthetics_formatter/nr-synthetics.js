@@ -34,23 +34,21 @@ builder.selenium2.io.addLangFormatter({
     "var assert = require('assert'),\n" +
     "  By = $driver.By,\n" +
     "  browser = $browser.manage(),\n" +
-    "  thisStep = 0,\n" +
     "  startTime = Date.now(),\n" +
     "  stepStartTime = Date.now(),\n" +
     "  lastMsg = '',\n" +
     "  VARS = {};\n\n" +    
-    "var log = function(msg) {\n" +
+    "var log = function(thisStep, msg) {\n" +
     "   if (thisStep > 0) {\n" +
+    "     var lastStep = thisStep - 1;\n" +
     "     var lastStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
-    "     console.log('Step ' + thisStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
-    "     $util.insights.set('Step ' + thisStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
+    "     console.log('Step ' + lastStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
+    "     $util.insights.set('Step ' + lastStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
     "   }\n" +
-    "   thisStep++;\n" +
     "   stepStartTime = Date.now() - startTime;\n" +
     "   console.log('Step ' + thisStep + ': ' + msg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
     "   lastMsg = msg;\n" +
     " };\n\n" +
-    "log('init');\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
     "    var thisAlert = $browser.switchTo().alert();\n" +
@@ -68,6 +66,7 @@ builder.selenium2.io.addLangFormatter({
     "  return isTextPresentIn(text, $browser.findElement(By.tagName('html')));\n" +
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
+    "log(0, 'init');\n\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
     "if (UserAgent && (0 !== UserAgent.trim().length) && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
@@ -85,111 +84,114 @@ builder.selenium2.io.addLangFormatter({
     "/** END OF SCRIPT **/",
     
 lineForType: {
-    "get":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {url}');\n" +
-	  "  return $browser.get({url});\n" +
-	  "})\n\n",
+    "get": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify(step.id, "$browser.get({url})" )); },
     "refresh":
-      function(step) { return scriptify("$browser.navigate().refresh()"); },
+      function(step) { return scriptify(step.id, "$browser.navigate().refresh()"); },
     "goBack":
-      function(step) { return scriptify("$browser.navigate().back()"); },
+      function(step) { return scriptify(step.id, "$browser.navigate().back()"); },
     "goForward":
-      function(step) { return scriptify("$browser.navigate().forward()"); },
+      function(step) { return scriptify(step.id, "$browser.navigate().forward()"); },
     "close":
       "",
-    "print":
-      ".then(function () { console.log({text}); })\n\n",
+    "print": function(step, escapeValue, userParams, doSubs) {
+       doSubs(commentstep(adjuststep(step.id)) +
+       ".then(function () {\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {text}');\n" +
+        "  console.log({text}); })\n\n"); },
+    "print": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify(step.id, "console.log({text})" )); },
     "pause":
-      function(step) { return scriptify("$browser.sleep( " + step.waitTime + ")"); },
+      function(step) { return scriptify(step.id, "$browser.sleep( " + step.waitTime + ")"); },
     "switchToFrame":
-      function(step) { return scriptify("$browser.switchTo().frame('" + step.identifier + "')"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().frame('" + step.identifier + "')"); },
     "switchToFrameByIndex":
-      function(step) { return scriptify("$browser.switchTo().frame('" + step.index + "')"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().frame('" + step.index + "')"); },
     "switchToWindow":
-      function(step) { return scriptify("$browser.switchTo().window('" + step.name + "')"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().window('" + step.name + "')"); },
     "switchToDefaultContent":
-      function(step) { return scriptify("$browser.switchTo().defaultContent()"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().defaultContent()"); },
      "answerAlert":
-      function(step) { return scriptify("$browser.switchTo().alert().sendKeys(" + step.text + ")"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().alert().sendKeys(" + step.text + ")"); },
     "acceptAlert":
-      function(step) { return scriptify("$browser.switchTo().alert().accept()"); },
+      function(step) { return scriptify(step.id, "$browser.switchTo().alert().accept()"); },
     "dismissAlert":
-      function(step) { return scriptify("$browser.switchTo().alert().dismiss()"); },
-    "store":
-      ".then(function () {  ${{variable}} = '' + {text}; })\n\n",
-    "clickElement":
-	  ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { el.click(); })\n\n",
-    "doubleClickElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { $browser.actions().doubleClick(el).perform(); })\n\n",
-    "mouseOverElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { $browser.actions().mouseMove(el).perform(); })\n\n",
-    "clickElementWithOffset":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) {\n" +
-	  "  $browser.actions().mouseMove(el, {offset}).click().perform(); })\n\n",
-    "setElementText":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) {\n" +
-      "  el.clear();\n" +
-      "  el.sendKeys({text}); })\n\n",
-    "sendKeysToElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +  
-      "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { el.sendKeys({text}); })\n\n",
-    "setElementSelected":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function(el) { el.isSelected()\n" +
-	  "  .then(function(bool) { if (!bool) { el.click(); } });\n" +
-	  "})\n\n",
-    "setElementNotSelected":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function(el) { el.isSelected()\n" +
-	  "  .then(function(bool) { if (bool) { el.click(); } });\n" +
-	  "})\n\n",
-    "clearSelections":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { el.clear(); })\n\n",
-    "dragToAndDropElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-      ".then(function (el) { $browser.actions().dragAndDrop(el, {targetLocator}).perform(); })\n\n",
-    "clickAndHoldElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { $browser.actions().mouseDown(el).perform(); })\n\n",
-    "releaseElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { $browser.actions().mouseUp(el).perform(); })\n\n",
-    "submitElement":
-      ".then(function () {\n" +
-	  "  log('{stepTypeName} {locator}');\n" +
-	  "  return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
-	  ".then(function (el) { el.submit(); })\n\n",
+      function(step) { return scriptify(step.id, "$browser.switchTo().alert().dismiss()"); },
+    "store": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(commentstep(adjuststep(step.id)) +
+        ".then(function () {\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} ${{variable}}');\n" +
+        "  ${{variable}} = '' + {text}; })\n\n"); },
+    "clickElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { el.click()")); },
+    "doubleClickElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { $browser.actions().doubleClick(el).perform()")); },
+    "mouseOverElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { $browser.actions().mouseMove(el).perform()")); },
+    "clickElementWithOffset": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) {\n" +
+        "  $browser.actions().mouseMove(el, {offset}).click().perform()")); },
+    "setElementText": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) {\n" +
+        "  el.clear();\n" +
+        "  el.sendKeys({text})")); },
+    "sendKeysToElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { el.sendKeys({text})")); },
+    "setElementSelected": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function(el) { el.isSelected()\n" +
+        "  .then(function(bool) { if (!bool) { el.click(); } })")); },
+    "setElementNotSelected": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function(el) { el.isSelected()\n" +
+        "  .then(function(bool) { if (bool) { el.click(); } })")); },
+    "clearSelections": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { el.clear()")); },
+    "dragToAndDropElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { $browser.actions().dragAndDrop(el, {targetLocator}).perform()")); },
+    "clickAndHoldElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "return $browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { $browser.actions().mouseDown(el).perform()")); },
+    "releaseElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { $browser.actions().mouseUp(el).perform()")); },
+    "submitElement": function(step, escapeValue, userParams, doSubs) {
+      return doSubs(scriptify_complex(step.id,
+        "{stepTypeName} {locator}",
+        "$browser.waitForAndFindElement(By.{locatorBy}({locator}), DefaultTimeout); })\n" +
+        ".then(function (el) { el.submit()")); },
     "addCookie":
       function(step, escapeValue) {
         var data = {value: step.value, name: step.name};
@@ -197,21 +199,23 @@ lineForType: {
           var entryArr = entry.split("=");
           data[entryArr[0]] = entryArr[1];
         });
-        return ".then(function () {\n" +
-        "  log('addCookie " + data['name'] + ", " + data['value'] + "');\n" +
-	    "  browser.addCookie('" + data['name'] + "', '" + data['value'] + "');\n" +
-	    "})\n\n";
+        return commentstep(adjuststep(step.id)) + 
+          ".then(function () {\n" +
+          "  log(" + adjuststep(step.id) + ", 'addCookie " + data['name'] + ", " + data['value'] + "');\n" +
+          "  browser.addCookie('" + data['name'] + "', '" + data['value'] + "');\n" +
+          "})\n\n";
       },
     "deleteCookie":
-      function(step) { return scriptify("browser.deleteCookie(\"" + step.name + "\")"); },
+      function(step) { return scriptify(step.id, "browser.deleteCookie(\"" + step.name + "\")"); },
     "saveScreenshot":
-      function(step) { return scriptify("$browser.takeScreenshot()"); },
+      function(step) { return scriptify(step.id, "$browser.takeScreenshot()"); },
   },
   waitFor: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {negNot}{cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  return $browser.wait(function() {\n" +
         "    {getter}\n" +
         "    return {value} != {cmp};\n" +
@@ -219,8 +223,9 @@ lineForType: {
         "{getterFinish}", getter);
     } else {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {cmp}');\n" +
         "  return $browser.wait(function() {\n" +
         "    {getter}\n" +
         "    return {value} == {cmp};\n" +
@@ -231,15 +236,17 @@ lineForType: {
   assert: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {negNot}{cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "    assert.notEqual({value}, {cmp}, '{stepTypeName} {negNot}{cmp} FAILED.');\n" +
         "{getterFinish}", getter);
     } else {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {negNot}{cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "    assert.equal({value}, {cmp}, '{stepTypeName} {negNot}{cmp} FAILED.');\n" +
         "{getterFinish}", getter);
@@ -248,8 +255,9 @@ lineForType: {
   verify: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {negNot}{cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "  if ({value} == {cmp}) {\n" +
         "    console.log('{stepTypeName} {negNot}{cmp} FAILED.');\n" +
@@ -260,8 +268,9 @@ lineForType: {
         "{getterFinish}", getter);
     } else {
       return doSubs(
+        commentstep(adjuststep(step.id)) + 
         ".then(function () {\n" +
-        "  log('{stepTypeName} {negNot}{cmp}');\n" +
+        "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
         "  if ({value} != {cmp}) {\n" +
         "    console.log('{stepTypeName} {negNot}{cmp} FAILED');\n" +
@@ -272,12 +281,15 @@ lineForType: {
         "{getterFinish}", getter);
     }
   },
-  store:
-    ".then(function () {\n" +
-    "  log('{stepTypeName} ${{variable}}');\n" +
-    "  {getter}\n" +
-    "  ${{variable}} = {value};\n" +
-    "{getterFinish}",
+  store: function(step, escapeValue, doSubs, getter) {
+    return doSubs(
+      commentstep(adjuststep(step.id)) + 
+      ".then(function () {\n" +
+      "  log(" + adjuststep(step.id) + ", '{stepTypeName} ${{variable}}');\n" +
+      "  {getter}\n" +
+      "  ${{variable}} = {value};\n" +
+      "{getterFinish}", getter); 
+  },
   getters: {    
     "BodyText": {
       getter: "return $browser.findElement($driver.By.tagName('body')); })\n" +
@@ -364,37 +376,45 @@ lineForType: {
       value: "value"
     }
   },
-  boolean_assert:
-    ".then(function () {\n" + 
-    "  log('{stepTypeName} {negNot}{value}');\n" +
-    "  {getter}.then(function (bool) {\n" +
-    "    assert.ok(({negNot}bool), '{stepTypeName} FAILED.');\n" +
-    "  });\n" +
-    "{getterFinish}",
-  boolean_verify:
-    ".then(function () {\n" + 
-    "  log('{stepTypeName} {negNot}{value}');\n" +
-    "  {getter}.then(function (bool) {\n" +
-    "    if ({posNot}bool) {\n" +
-    "      console.log('{stepTypeName} FAILED.');\n" +
-    "      $browser.takeScreenshot();\n" +
-    "    } else {\n" +
-    "      console.log('{stepTypeName} SUCCEEDED.');\n" +
-    "    }\n" +
-    "  });\n" +
-    "{getterFinish}",
-  boolean_waitFor: 
-    ".then(function () {\n" +
-    "  log('{stepTypeName} {negNot}{value}');\n" +
-    "  $browser.wait(function () {\n" +
-    "     return {getter}.then(function (bool) { return {negNot}bool; });\n" +
-    "  }, DefaultTimeout);\n" +
-    "})\n\n",
-  boolean_store:
-    ".then(function () {\n" + 
-    "  log('{stepTypeName} ${{variable}}');\n" +
-    "  {getter}.then(function (bool) { ${{variable}} = bool; });\n" +
-    "{getterFinish}",
+  boolean_assert: function(step, escapeValue, doSubs, getter) {
+    return doSubs(
+      commentstep(adjuststep(step.id)) + 
+      ".then(function () {\n" + 
+      "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{value}');\n" +
+      "  {getter}.then(function (bool) {\n" +
+      "    assert.ok(({negNot}bool), '{stepTypeName} FAILED.');\n" +
+      "  });\n" +
+      "{getterFinish}", getter); },
+  boolean_verify: function(step, escapeValue, doSubs, getter) {
+    return doSubs(
+      commentstep(adjuststep(step.id)) + 
+      ".then(function () {\n" + 
+      "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{value}');\n" +
+      "  {getter}.then(function (bool) {\n" +
+      "    if ({posNot}bool) {\n" +
+      "      console.log('{stepTypeName} FAILED.');\n" +
+      "      $browser.takeScreenshot();\n" +
+      "    } else {\n" +
+      "      console.log('{stepTypeName} SUCCEEDED.');\n" +
+      "    }\n" +
+      "  });\n" +
+      "{getterFinish}", getter); },
+  boolean_waitFor: function(step, escapeValue, doSubs, getter) {
+    return doSubs(
+      commentstep(adjuststep(step.id)) + 
+      ".then(function () {\n" +
+      "  log(" + adjuststep(step.id) + ", '{stepTypeName} {negNot}{value}');\n" +
+      "  $browser.wait(function () {\n" +
+      "     return {getter}.then(function (bool) { return {negNot}bool; });\n" +
+      "  }, DefaultTimeout);\n" +
+      "})\n\n", getter); },
+  boolean_store: function(step, escapeValue, doSubs, getter) {
+    return doSubs(
+      commentstep(adjuststep(step.id)) + 
+      ".then(function () {\n" + 
+      "  log(" + adjuststep(step.id) + ", '{stepTypeName} ${{variable}}');\n" +
+      "  {getter}.then(function (bool) { ${{variable}} = bool; });\n" +
+      "{getterFinish}", getter); },
   boolean_getters: {
     "TextPresent": {
       getter: "isTextPresent({text})",
@@ -511,15 +531,39 @@ lineForType: {
   unusedVar: function(varName, varType) { return "VARS." + varName; }
 });
 
+var firststep = true;
+var stepoffset = 0;
+
+function adjuststep(stepid) {
+  if (firststep === true) {
+    firststep = false;
+    stepoffset = stepid - 1;
+  }
+  return stepid - stepoffset;
+}
+
 function print_nr_unsupported(thing) {
   return "\/\/ Function " + thing + " is not supported by New Relic Synthetics.\n";
 }
 
-function scriptify(msg) {
-  return ".then(function() {\n" + 
-    "  log(\'" + msg + "\');\n" +
-    "  return " + msg + ";\n" +
-    "})\n\n"; 
+function commentstep(stepid) {
+  return "\/\/ Step " + stepid + "\n";
+}
+
+function scriptify(stepid, msg) {
+  var adjustedstep = adjuststep(stepid);
+  return commentstep(adjustedstep) +
+    ".then(function() {\n" + 
+    "  log(" + adjuststep(stepid) + ", \'" + msg + "\');\n" +
+    "  return " + msg + "; })\n\n"; 
+}
+      
+function scriptify_complex(stepid, logmsg, msg) {
+  var adjustedstep = adjuststep(stepid);
+  return commentstep(adjustedstep) +
+    ".then(function() {\n" + 
+    "  log(" + adjuststep(stepid) + ", \'" + logmsg + "\');\n" +
+    "  return " + msg + "; })\n\n"; 
 }
 
 if (builder && builder.loader && builder.loader.loadNextMainScript) { builder.loader.loadNextMainScript(); }
