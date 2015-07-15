@@ -208,7 +208,12 @@ lineForType: {
     "deleteCookie":
       function(step) { return scriptify(step.id, "browser.deleteCookie(\"" + step.name + "\")"); },
     "saveScreenshot":
-      function(step) { return scriptify(step.id, "$browser.takeScreenshot()"); },
+      function(step) { return commentstep(adjuststep(step.id)) + 
+          ".then(function () {\n" +
+          "  log(" + adjuststep(step.id) + ", '$browser.takeScreenshot()');\n" +
+          "  $browser.takeScreenshot();\n" +
+          "})\n\n"; 
+      },
   },
   waitFor: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
