@@ -12,7 +12,9 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 1. Download & install [se-builder](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
    * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
+   * Run it by going to Tools > Web Developer > Launch Selenium Builder.
 3. Se-builder will appear as a small icon that looks like a Lego piece in the Firefox add-ons toolbar. Click on that icon to load.
+   * If Se-builder does not show up, click on the Hamburger menu, click Customise, and drag the Se-builder icon from "Additional Tools and Features" on the left into the toolbar.
 
 ## Install the plugin
 
