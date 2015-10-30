@@ -43,9 +43,7 @@ builder.selenium2.io.addLangFormatter({
     "     var lastStep = thisStep - 1;\n" +
     "     var lastStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
     "     console.log('Step ' + lastStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
-    "     $util.insights.set('StepName', lastMsg);\n" +
-    "     $util.insights.set('StepNumber', lastStep);\n" +
-    "     $util.insights.set('StepElapsedTime', lastStepTimeElapsed);\n" +
+    "     $util.insights.set('Step ' + lastStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
     "   }\n" +
     "   stepStartTime = Date.now() - startTime;\n" +
     "   console.log('Step ' + thisStep + ': ' + msg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
