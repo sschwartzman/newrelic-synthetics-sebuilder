@@ -36,19 +36,23 @@ builder.selenium2.io.addLangFormatter({
     "  browser = $browser.manage(),\n" +
     "  startTime = Date.now(),\n" +
     "  stepStartTime = Date.now(),\n" +
-    "  lastMsg = '',\n" +
-    "  VARS = {};\n\n" +    
-    "var log = function(thisStep, msg) {\n" +
-    "   if (thisStep > 0) {\n" +
-    "     var lastStep = thisStep - 1;\n" +
-    "     var lastStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
-    "     console.log('Step ' + lastStep + ': ' + lastMsg + ' FINISHED. It took ' + lastStepTimeElapsed + 'ms to complete.');\n" +
-    "     $util.insights.set('Step ' + lastStep + ': ' + lastMsg, lastStepTimeElapsed);\n" +
-    "   }\n" +
-    "   stepStartTime = Date.now() - startTime;\n" +
-    "   console.log('Step ' + thisStep + ': ' + msg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
-    "   lastMsg = msg;\n" +
-    " };\n\n" +
+    "  prevMsg = '',\n" +
+    "  prevStep = 0,\n" +
+    "  lastStep = 9999,\n" +
+  	"  VARS = {};\n\n" +
+  	"var log = function(thisStep, thisMsg) {\n" +
+  	"  if (thisStep > 1 || thisStep == lastStep) {\n" +
+  	"    var prevStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
+  	"    console.log('Step ' + prevStep + ': ' + prevMsg + ' FINISHED. It took ' + prevStepTimeElapsed + 'ms to complete.');\n" +
+  	"    $util.insights.set('Step ' + prevStep + ': ' + prevMsg, prevStepTimeElapsed);\n" +
+  	"  }\n" +
+  	"  if (thisStep > 0 && thisStep != lastStep) {\n" +
+  	"    stepStartTime = Date.now() - startTime;\n" +
+  	"    console.log('Step ' + thisStep + ': ' + thisMsg + ' STARTED at ' + stepStartTime + 'ms.');\n" +
+  	"    prevMsg = thisMsg;\n" +
+  	"    prevStep = thisStep;\n" +
+  	"  }\n" +
+    "};\n\n" +
     "function isAlertPresent() {\n" +
     "  try {\n" +
     "    var thisAlert = $browser.switchTo().alert();\n" +
@@ -66,7 +70,6 @@ builder.selenium2.io.addLangFormatter({
     "  return isTextPresentIn(text, $browser.findElement(By.tagName('html')));\n" +
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
-    "log(0, 'init');\n\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
     "if (UserAgent && (0 !== UserAgent.trim().length) && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
@@ -76,8 +79,10 @@ builder.selenium2.io.addLangFormatter({
     "$browser.getCapabilities().then(function () { })\n\n",
   end:
     ".then(function() {\n" +
+    "  log(lastStep, '');\n" +
     "  console.log('Browser script execution SUCCEEDED.');\n" +
     "}, function(err) {\n" +
+    "  log(lastStep, '');\n" +
     "  console.log ('Browser script execution FAILED.');\n" +
     "  throw(err);\n" +
     "});\n\n" +
