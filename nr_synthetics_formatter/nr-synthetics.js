@@ -12,7 +12,10 @@ builder.selenium2.io.addLangFormatter({
     " * for details.\n" +
     " */\n\n" +
     "/** CONFIGURATIONS **/\n\n" +
-    "// Script-wide timeout for wait and waitAndFind functions (in ms)\n" +
+    "// Theshold for duration of entire script - fails test if script lasts longer than X (in ms)\n" +
+    "// Default is '0', which means that it won't fail.\n" +
+    "var ScriptTimeout = 0;\n" +
+    "// Script-wide timeout for all wait and waitAndFind functions (in ms)\n" +
     "var DefaultTimeout = 10000;\n" +
     "// Change to any User Agent you want to use.\n" +
     "// Leave as \"default\" or empty to use the Synthetics default.\n" +
@@ -29,9 +32,13 @@ builder.selenium2.io.addLangFormatter({
     "  VARS = {};\n\n" +
     "var log = function(thisStep, thisMsg) {\n" +
     "  if (thisStep > 1 || thisStep == lastStep) {\n" +
+    "    var totalTimeElapsed = Date.now() - startTime;\n" +
     "    var prevStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
     "    console.log('Step ' + prevStep + ': ' + prevMsg + ' FINISHED. It took ' + prevStepTimeElapsed + 'ms to complete.');\n" +
     "    $util.insights.set('Step ' + prevStep + ': ' + prevMsg, prevStepTimeElapsed);\n" +
+    "    if (ScriptTimeout > 0 && totalTimeElapsed > ScriptTimeout) {\n" +
+    "      throw new Error('Script timed out. ' + totalTimeElapsed + 'ms is longer than script timeout threshold of ' + ScriptTimeout + 'ms.');\n" +
+    "    }\n" +
     "  }\n" +
     "  if (thisStep > 0 && thisStep != lastStep) {\n" +
     "    stepStartTime = Date.now() - startTime;\n" +
@@ -69,7 +76,6 @@ builder.selenium2.io.addLangFormatter({
     "  log(lastStep, '');\n" +
     "  console.log('Browser script execution SUCCEEDED.');\n" +
     "}, function(err) {\n" +
-    "  log(lastStep, '');\n" +
     "  console.log ('Browser script execution FAILED.');\n" +
     "  throw(err);\n" +
     "});\n\n" +
