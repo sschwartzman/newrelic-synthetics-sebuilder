@@ -1,4 +1,4 @@
-New Relic Synthetics<br>formatter for Se-builder
+New Relic Synthetics<br>formatter for Selenium-builder
 ==============================
 
 Plugin (formatter) for Se-builder that generates javascript from Se-builder scripts to use in New Relic Synthetics Scripted Browser tests.
@@ -9,7 +9,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## Install the prerequisites
 
-1. Download & install [se-builder](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
+1. Download & install [selenium-builder](http://seleniumbuilder.github.io/se-builder/selenium-builder-latest.xpi).
    * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
    * Run it by going to Tools > Web Developer > Launch Selenium Builder.
