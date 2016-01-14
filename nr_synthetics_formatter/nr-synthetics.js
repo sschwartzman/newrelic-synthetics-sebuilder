@@ -33,7 +33,7 @@ builder.selenium2.io.addLangFormatter({
     "var log = function(thisStep, thisMsg) {\n" +
     "  if (thisStep > 1 || thisStep == lastStep) {\n" +
     "    var totalTimeElapsed = Date.now() - startTime;\n" +
-    "    var prevStepTimeElapsed = Date.now() - (startTime + stepStartTime);\n" +
+    "    var prevStepTimeElapsed = totalTimeElapsed - stepStartTime;\n" +
     "    console.log('Step ' + prevStep + ': ' + prevMsg + ' FINISHED. It took ' + prevStepTimeElapsed + 'ms to complete.');\n" +
     "    $util.insights.set('Step ' + prevStep + ': ' + prevMsg, prevStepTimeElapsed);\n" +
     "    if (ScriptTimeout > 0 && totalTimeElapsed > ScriptTimeout) {\n" +
