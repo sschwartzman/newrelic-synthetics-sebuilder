@@ -3,6 +3,13 @@ New Relic Synthetics<br>formatter for Selenium-builder
 
 Plugin (formatter) for Se-builder that generates javascript from Se-builder scripts to use in New Relic Synthetics Scripted Browser tests.
 
+## IMPORTANT - Version Compatibility
+
+<b>The old version of Se-Builder no longer runs in Firefox by default. See https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox for a workaround.</b> I will update this plugin to work with the new version once it is closer to feature parity with the old version.
+
+* Old version of Selenium Builder (works with this plugin): https://github.com/SeleniumBuilder/se-builder/
+* New version of Selenium Builder (untested with this plugin): https://github.com/SeleniumBuilder/selenium-builder/
+
 ## Download the plugin
 
 [Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
