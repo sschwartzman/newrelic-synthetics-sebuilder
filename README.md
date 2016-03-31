@@ -5,10 +5,11 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## IMPORTANT - Version Compatibility
 
-<b>The old version of Se-Builder no longer runs in Firefox by default. See https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox for a workaround.</b> I will update this plugin to work with the new version once it is closer to feature parity with the old version.
+This formatter plugin is currently tested and compatible with the old version of Se-Builder, which is an unisgned plugin. <b>The old version of Se-Builder no longer runs in Firefox by default. See https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox for a workaround.</b> I will update this formatter to work with the new version (now called Selenium Builder) once it is closer to feature parity with the old version.
 
-* Old version of Selenium Builder (works with this plugin): https://github.com/SeleniumBuilder/se-builder/
-* New version of Selenium Builder (untested with this plugin): https://github.com/SeleniumBuilder/selenium-builder/
+* Old version: Se-Builder (works with this plugin): https://github.com/SeleniumBuilder/se-builder/
+* Download link for old version of Se-Builder: http://www.saucelabs.com/addons/selenium-builder-latest.xpi
+* New version: Selenium Builder (untested with this plugin): https://github.com/SeleniumBuilder/selenium-builder/
 
 ## Download the plugin
 
@@ -16,7 +17,7 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## Install the prerequisites
 
-1. Download & install [selenium-builder](http://seleniumbuilder.github.io/se-builder/selenium-builder-latest.xpi).
+1. Download & install [se-builder](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
    * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
    * Run it by going to Tools > Web Developer > Launch Selenium Builder.
