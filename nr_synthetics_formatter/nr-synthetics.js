@@ -54,14 +54,18 @@ builder.selenium2.io.addLangFormatter({
     "  } catch (err) { return false; }\n" +
     "}\n\n" +
     "function isElementSelected(el) { return $browser.findElement(el).isSelected(); }\n\n" + 
-    "function isTextPresentIn(text, sourceEl) {\n" +
-    "  return sourceEl.getText()\n" +
-    "  .then(function (wholetext) {\n" +
-    "    return wholetext.indexOf(text) != -1;\n" +
-    "  });\n" +
+    "function isTextPresentIn(text, selector) {\n" +
+    "  return $browser.findElement(selector)\n" +
+    "    .getText()\n" +
+    "    .then(function (wholetext) {\n" +
+    "      return wholetext.indexOf(text) != -1;\n" +
+    "    })\n" +
+    "    .catch(function(err) {\n" +
+    "      return false;\n" +
+    "    });\n" +
     "}\n\n" +
     "function isTextPresent(text) {\n" +
-    "  return isTextPresentIn(text, $browser.findElement(By.tagName('html')));\n" +
+    "  return isTextPresentIn(text, By.tagName('html'));\n" +
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
