@@ -5,29 +5,41 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 ## IMPORTANT - Version Compatibility
 
-<b>The old version of Se-Builder no longer runs in Firefox by default. See https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox for a workaround.</b> I will update this plugin to work with the new version once it is closer to feature parity with the old version.
+### Selenium Builder 3 Compatibility Update
 
-* Old version of Selenium Builder (works with this plugin): https://github.com/SeleniumBuilder/se-builder/
-* New version of Selenium Builder (untested with this plugin): https://github.com/SeleniumBuilder/selenium-builder/
+<b>I have tested the plugin with the new version of se-builder and it works fine!</b> You can use that version if you want, installed from here: https://addons.mozilla.org/en-GB/firefox/addon/selenium-builder/
 
-## Download the plugin
+The only change in the installation is the location of the plugin. It is now placed in `SeBuilder3/plugins` instead of `SeBuilder/plugins`. Can't find the plugins directory? [Check here!](#cant-find-the-plugins-directory)
 
-[Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
+<b>Limitation of Selenium Builder 3: local playback does not work.</b> If you want to record a script and replay it after tweaking, you'll need to run a Selenium Server somewhere. [That's easy enough to do.](http://www.seleniumhq.org/docs/05_selenium_rc.jsp#installation) It can be run locally on your laptop.
 
-## Install the prerequisites
+### Selenium Builder 2 (aka Se-Builder) Compatibility
 
-1. Download & install [selenium-builder](http://seleniumbuilder.github.io/se-builder/selenium-builder-latest.xpi).
-   * Yes, you'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
-2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin.
-   * Run it by going to Tools > Web Developer > Launch Selenium Builder.
-3. Se-builder will appear as a small icon that looks like a Lego piece in the Firefox add-ons toolbar. Click on that icon to load.
-   * If Se-builder does not show up, click on the Hamburger menu, click Customise, and drag the Se-builder icon from "Additional Tools and Features" on the left into the toolbar.
+This formatter plugin is tested and compatible with the old version of Se-Builder, which is an unisgned plugin. <b>The old version of Se-Builder no longer runs in Firefox by default. See https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox for a workaround.</b> NOTE: This workaround may not work for the most recent versions of Firefox. If that's the case, either use an older version of Firefox, or use Selenium Builder 3 (now that the plugin supports it).
 
-## Install the plugin
+* Old version: Se-Builder 2: https://github.com/SeleniumBuilder/se-builder/
+	* Download: http://www.saucelabs.com/addons/selenium-builder-latest.xpi
+* New version: Selenium Builder 3: https://github.com/SeleniumBuilder/selenium-builder/
+    * Download: https://addons.mozilla.org/en-GB/firefox/addon/selenium-builder/
 
-1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/archive/master.zip)
-2. Unzip the plugin into the `SeBuilder/plugins` directory on in your Firefox profile. 
-   * **NOTE:** The zip contains a folder called `nr_synthetics_formatter`. Move the **FOLDER with enclosed files** into the plugins directory, rather than moving the files themselves without the folder.
+## Installation
+
+### Download the plugin
+
+[Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+
+### Install the prerequisites
+
+1. Download & install either Se-builder v2 or v3:
+   * [se-builder 2](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
+   * [Selenium Builder 3](https://addons.mozilla.org/en-GB/firefox/addon/selenium-builder/)
+   * You'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
+2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin. Run it by going to <b>Tools > Web Developer > Launch Selenium Builder.</b>
+
+### Install the plugin
+
+1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+2. Unzip the plugin into the `SeBuilder/plugins` (v2) or `SeBuilder3/plugins` (v3) directory on in your Firefox profile. Your folder structure should look like this: ![Img of folder structure](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/etc/folder_structure.png)
    * Can't find the Se-builder plugins directory? [Check here](#cant-find-the-plugins-directory)
 3. Restart the se-builder if you still have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
 4. To verify that the plugin is loaded, click "Manage plugins" in the opening dialog box. You should see "New Relic Synthetics Formatter #.#  Installed" in the Plugins list.
@@ -45,7 +57,8 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
    * Save the result to any name and location you want, so long as you can find it! 
    * When saving, add ".js" to the end of the file name so that it looks pretty in your text editor of choice.
 3. Create a new Scripted Browser monitor in Synthetics
-   * Click "Add New Monitor" in the main screen of Synthetics or visit https://synthetics.newrelic.com/accounts/[your_account_id].monitors/new
+   * Click "Add New Monitor" in the main screen of Synthetics or visit 
+   https://synthetics.newrelic.com/accounts/[your_account_id]/monitors/new
    * Choose "Scripted Browser" as the monitor type, and then set the name, locations & frequency as you like.
    * In the "Script your steps" window, clear the contents there and paste the contents of your exported script.
    * Be sure to click "Validate" below this window pane to ensure that the script works properly.
@@ -63,11 +76,21 @@ Plugin (formatter) for Se-builder that generates javascript from Se-builder scri
 
 Here are some common locations for the plugins directory:
 
+#### SeBuilder v2
+
   * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
   * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder/plugins`
   * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder/plugins`
+
+#### Selenium Builder 3
+
+  * Mac: `/Users/[you]/Library/Application Support/Firefox/Profiles/[your_profile]/SeBuilder3/plugins`
+  * Win: `C:/Users/[you]/Appdata/Roaming/Mozilla/Firefox/Profiles/[your_profile]/SeBuilder3/plugins`
+  * Linux/Unix: `~/.mozilla/firefox/[your_profile]/SeBuilder3/plugins`
   
-##### Can't find the "Library" folder on your Mac? If you need to open it:
+#### Can't find the "Library" folder on your Mac?
+
+It may be hidden from view in your Finder. Here's how to unhide it:
 
   1. Open your Home folder in Finder.
   2. Right-click in the finder window and click "Show View Options", or open it by pressing ⌘-J.

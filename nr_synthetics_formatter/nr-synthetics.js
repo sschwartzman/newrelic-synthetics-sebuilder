@@ -4,6 +4,8 @@ builder.selenium2.io.addLangFormatter({
   not: "!",
   start:
     "/**\n" +
+    " * Script Name: {scriptName}\n" +
+	" * \n" +
     " * Generated script for New Relic Synthetics\n" +
     " * Generated using se-builder with New Relic Synthetics Formatter\n" +
     " *\n" +
@@ -13,10 +15,8 @@ builder.selenium2.io.addLangFormatter({
     " */\n\n" +
     "/** CONFIGURATIONS **/\n\n" +
     "// Theshold for duration of entire script - fails test if script lasts longer than X (in ms)\n" +
-    "// Default is '0', which means that it won't fail.\n" +
-    "var ScriptTimeout = 0;\n" +
     "// Script-wide timeout for all wait and waitAndFind functions (in ms)\n" +
-    "var DefaultTimeout = 10000;\n" +
+    "var DefaultTimeout = {timeoutSeconds}000;\n" +
     "// Change to any User Agent you want to use.\n" +
     "// Leave as \"default\" or empty to use the Synthetics default.\n" +
     "var UserAgent = \"default\";\n\n" +
@@ -29,15 +29,18 @@ builder.selenium2.io.addLangFormatter({
     "  prevMsg = '',\n" +
     "  prevStep = 0,\n" +
     "  lastStep = 9999,\n" +
-    "  VARS = {};\n\n" +
+    "VARS = {};\n" +
+	"// Uncomment and use this if you're running Se-Builder 2 and used Manual Entry variables.\n" +
+	"// If you don't know what those are, fuggedaboutit!\n" +
+	"// VARS = {{scriptManualEntryData}};\n\n" +
     "var log = function(thisStep, thisMsg) {\n" +
     "  if (thisStep > 1 || thisStep == lastStep) {\n" +
     "    var totalTimeElapsed = Date.now() - startTime;\n" +
     "    var prevStepTimeElapsed = totalTimeElapsed - stepStartTime;\n" +
     "    console.log('Step ' + prevStep + ': ' + prevMsg + ' FINISHED. It took ' + prevStepTimeElapsed + 'ms to complete.');\n" +
     "    $util.insights.set('Step ' + prevStep + ': ' + prevMsg, prevStepTimeElapsed);\n" +
-    "    if (ScriptTimeout > 0 && totalTimeElapsed > ScriptTimeout) {\n" +
-    "      throw new Error('Script timed out. ' + totalTimeElapsed + 'ms is longer than script timeout threshold of ' + ScriptTimeout + 'ms.');\n" +
+    "    if (DefaultTimeout > 0 && totalTimeElapsed > DefaultTimeout) {\n" +
+    "      throw new Error('Script timed out. ' + totalTimeElapsed + 'ms is longer than script timeout threshold of ' + DefaultTimeout + 'ms.');\n" +
     "    }\n" +
     "  }\n" +
     "  if (thisStep > 0 && thisStep != lastStep) {\n" +
@@ -64,6 +67,10 @@ builder.selenium2.io.addLangFormatter({
     "  return isTextPresentIn(text, $browser.findElement(By.tagName('html')));\n" +
     "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
+    "console.log('Starting synthetics script: {scriptName}');\n" +
+	"console.log('Default timeout is set to ' + (DefaultTimeout/1000) + ' seconds');\n" +
+	"console.log('Variables set in this script: ', VARS);\n" +
+	"\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
     "if (UserAgent && (0 !== UserAgent.trim().length) && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
