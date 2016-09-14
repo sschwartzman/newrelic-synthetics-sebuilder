@@ -24,9 +24,7 @@ This formatter plugin is tested and compatible with the old version of Se-Builde
 
 ## Installation
 
-### Download the plugin
-
-[Download link for plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+### Download the plugin: [Download link](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/raw/master/nr_synthetics_formatter.zip)
 
 ### Install the prerequisites
 
@@ -38,7 +36,7 @@ This formatter plugin is tested and compatible with the old version of Se-Builde
 
 ### Install the plugin
 
-1. [Download the plugin](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/nr_synthetics_formatter.zip)
+1. If you haven't already, [Download the plugin!](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/raw/master/nr_synthetics_formatter.zip)
 2. Unzip the plugin into the `SeBuilder/plugins` (v2) or `SeBuilder3/plugins` (v3) directory on in your Firefox profile. Your folder structure should look like this: ![Img of folder structure](https://github.com/sschwartzman/newrelic-synthetics-sebuilder/blob/master/etc/folder_structure.png)
    * Can't find the Se-builder plugins directory? [Check here](#cant-find-the-plugins-directory)
 3. Restart the se-builder if you still have it running. You don't have to restart Firefox, just exit and re-open Se-builder.
