@@ -5,7 +5,7 @@ builder.selenium2.io.addLangFormatter({
   start:
     "/**\n" +
     " * Script Name: {scriptName}\n" +
-	" * \n" +
+  " * \n" +
     " * Generated script for New Relic Synthetics\n" +
     " * Generated using se-builder with New Relic Synthetics Formatter\n" +
     " *\n" +
@@ -30,9 +30,9 @@ builder.selenium2.io.addLangFormatter({
     "  prevStep = 0,\n" +
     "  lastStep = 9999,\n" +
     "VARS = {};\n" +
-	"// Uncomment and use this if you're running Se-Builder 2 and used Manual Entry variables.\n" +
-	"// If you don't know what those are, fuggedaboutit!\n" +
-	"// VARS = {{scriptManualEntryData}};\n\n" +
+    "// Uncomment and use this if you're running Se-Builder 2 and used Manual Entry variables.\n" +
+    "// If you don't know what those are, fuggedaboutit!\n" +
+    "// VARS = {{scriptManualEntryData}};\n\n" +
     "var log = function(thisStep, thisMsg) {\n" +
     "  if (thisStep > 1 || thisStep == lastStep) {\n" +
     "    var totalTimeElapsed = Date.now() - startTime;\n" +
@@ -56,25 +56,11 @@ builder.selenium2.io.addLangFormatter({
     "    return true;\n" +
     "  } catch (err) { return false; }\n" +
     "}\n\n" +
-    "function isElementSelected(el) { return $browser.findElement(el).isSelected(); }\n\n" + 
-    "function isTextPresentIn(text, selector) {\n" +
-    "  return $browser.findElement(selector)\n" +
-    "    .getText()\n" +
-    "    .then(function (wholetext) {\n" +
-    "      return wholetext.indexOf(text) != -1;\n" +
-    "    })\n" +
-    "    .catch(function(err) {\n" +
-    "      return false;\n" +
-    "    });\n" +
-    "}\n\n" +
-    "function isTextPresent(text) {\n" +
-    "  return isTextPresentIn(text, By.tagName('html'));\n" +
-    "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
     "console.log('Starting synthetics script: {scriptName}');\n" +
-	"console.log('Default timeout is set to ' + (DefaultTimeout/1000) + ' seconds');\n" +
-	"console.log('Variables set in this script: ', VARS);\n" +
-	"\n" +
+    "console.log('Default timeout is set to ' + (DefaultTimeout/1000) + ' seconds');\n" +
+    "console.log('Variables set in this script: ', VARS);\n" +
+    "\n" +
     "// Setting User Agent is not then-able, so we do this first (if defined and not default)\n" +
     "if (UserAgent && (0 !== UserAgent.trim().length) && (UserAgent != 'default')) {\n" +
     "  $browser.addHeader('User-Agent', UserAgent);\n" +
@@ -91,7 +77,7 @@ builder.selenium2.io.addLangFormatter({
     "  throw(err);\n" +
     "});\n\n" +
     "/** END OF SCRIPT **/",
-    
+
 lineForType: {
     "get": function(step, escapeValue, userParams, doSubs) {
       return doSubs(scriptify("$browser.get({url})" )); },
@@ -208,7 +194,7 @@ lineForType: {
           var entryArr = entry.split("=");
           data[entryArr[0]] = entryArr[1];
         });
-        return commentstep() + 
+        return commentstep() +
           ".then(function () {\n" +
           "  log(" + thisstep + ", 'addCookie " + data['name'] + ", " + data['value'] + "');\n" +
           "  browser.addCookie('" + data['name'] + "', '" + data['value'] + "');\n" +
@@ -217,17 +203,17 @@ lineForType: {
     "deleteCookie":
       function(step) { return scriptify("browser.deleteCookie(\"" + step.name + "\")"); },
     "saveScreenshot":
-      function(step) { return commentstep() + 
+      function(step) { return commentstep() +
           ".then(function () {\n" +
           "  log(" + thisstep + ", '$browser.takeScreenshot()');\n" +
           "  $browser.takeScreenshot();\n" +
-          "})\n\n"; 
+          "})\n\n";
       },
   },
   waitFor: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  return $browser.wait(function() {\n" +
@@ -237,7 +223,7 @@ lineForType: {
         "{getterFinish}", getter);
     } else {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {cmp}');\n" +
         "  return $browser.wait(function() {\n" +
@@ -250,7 +236,7 @@ lineForType: {
   assert: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
@@ -258,7 +244,7 @@ lineForType: {
         "{getterFinish}", getter);
     } else {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
@@ -269,7 +255,7 @@ lineForType: {
   verify: function(step, escapeValue, doSubs, getter) {
     if (step.negated) {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
@@ -282,7 +268,7 @@ lineForType: {
         "{getterFinish}", getter);
     } else {
       return doSubs(
-        commentstep() + 
+        commentstep() +
         ".then(function () {\n" +
         "  log(" + thisstep + ", '{stepTypeName} {negNot}{cmp}');\n" +
         "  {getter}\n" +
@@ -297,14 +283,14 @@ lineForType: {
   },
   store: function(step, escapeValue, doSubs, getter) {
     return doSubs(
-      commentstep() + 
+      commentstep() +
       ".then(function () {\n" +
       "  log(" + thisstep + ", '{stepTypeName} ${{variable}}');\n" +
       "  {getter}\n" +
       "  ${{variable}} = {value};\n" +
-      "{getterFinish}", getter); 
+      "{getterFinish}", getter);
   },
-  getters: {    
+  getters: {
     "BodyText": {
       getter: "return $browser.findElement($driver.By.tagName('body')); })\n" +
         "  .then(function (el) { return el.getText(); })\n" +
@@ -357,7 +343,7 @@ lineForType: {
       getterFinish: "})\n\n",
       cmp: "{value}",
       value: "value"
-    },   
+    },
     "ElementAttribute": {
       getter: "return $browser.findElement($driver.By.{locatorBy}({locator})); })\n" +
       "  .then(function (el) { return el.getAttribute({attributeName}); })\n" +
@@ -392,8 +378,8 @@ lineForType: {
   },
   boolean_assert: function(step, escapeValue, doSubs, getter) {
     return doSubs(
-      commentstep() + 
-      ".then(function () {\n" + 
+      commentstep() +
+      ".then(function () {\n" +
       "  log(" + thisstep + ", '{stepTypeName} {negNot}{value}');\n" +
       "  {getter}.then(function (bool) {\n" +
       "    assert.ok(({negNot}bool), '{stepTypeName} FAILED.');\n" +
@@ -401,8 +387,8 @@ lineForType: {
       "{getterFinish}", getter); },
   boolean_verify: function(step, escapeValue, doSubs, getter) {
     return doSubs(
-      commentstep() + 
-      ".then(function () {\n" + 
+      commentstep() +
+      ".then(function () {\n" +
       "  log(" + thisstep + ", '{stepTypeName} {negNot}{value}');\n" +
       "  {getter}.then(function (bool) {\n" +
       "    if ({posNot}bool) {\n" +
@@ -415,7 +401,7 @@ lineForType: {
       "{getterFinish}", getter); },
   boolean_waitFor: function(step, escapeValue, doSubs, getter) {
     return doSubs(
-      commentstep() + 
+      commentstep() +
       ".then(function () {\n" +
       "  log(" + thisstep + ", '{stepTypeName} {negNot}{value}');\n" +
       "  $browser.wait(function () {\n" +
@@ -424,14 +410,15 @@ lineForType: {
       "})\n\n", getter); },
   boolean_store: function(step, escapeValue, doSubs, getter) {
     return doSubs(
-      commentstep() + 
-      ".then(function () {\n" + 
+      commentstep() +
+      ".then(function () {\n" +
       "  log(" + thisstep + ", '{stepTypeName} ${{variable}}');\n" +
       "  {getter}.then(function (bool) { ${{variable}} = bool; });\n" +
       "{getterFinish}", getter); },
   boolean_getters: {
     "TextPresent": {
-      getter: "isTextPresent({text})",
+      getter: "$browser.findElement(By.tagName('body')).getText()\n" +
+      "  .then(function (text) { return text.indexOf({text}) != -1; })",
       getterFinish: "})\n\n",
       value: "{text}"
     },
@@ -441,7 +428,7 @@ lineForType: {
       value: "{locator}"
     },
     "ElementSelected": {
-      getter: "isElementSelected(By.{locatorBy}({locator}))",
+      getter: "$browser.findElement(By.{locatorBy}({locator})).isSelected()",
       getterFinish: "})\n\n",
       value: "{locator}"
     },
@@ -558,16 +545,16 @@ function print_nr_unsupported(thing) {
 
 function scriptify(msg) {
   return commentstep() +
-    ".then(function() {\n" + 
+    ".then(function() {\n" +
     "  log(" + thisstep + ", \'" + msg + "\');\n" +
-    "  return " + msg + "; })\n\n"; 
+    "  return " + msg + "; })\n\n";
 }
-      
+
 function scriptify_complex(logmsg, msg) {
   return commentstep() +
-    ".then(function() {\n" + 
+    ".then(function() {\n" +
     "  log(" + thisstep + ", \'" + logmsg + "\');\n" +
-    "  return " + msg + "; })\n\n"; 
+    "  return " + msg + "; })\n\n";
 }
 
 if (builder && builder.loader && builder.loader.loadNextMainScript) { builder.loader.loadNextMainScript(); }
