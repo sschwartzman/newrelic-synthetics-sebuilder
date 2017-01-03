@@ -50,12 +50,6 @@ builder.selenium2.io.addLangFormatter({
     "    prevStep = thisStep;\n" +
     "  }\n" +
     "};\n\n" +
-    "function isAlertPresent() {\n" +
-    "  try {\n" +
-    "    var thisAlert = $browser.switchTo().alert();\n" +
-    "    return true;\n" +
-    "  } catch (err) { return false; }\n" +
-    "}\n\n" +
     "/** BEGINNING OF SCRIPT **/\n\n" +
     "console.log('Starting synthetics script: {scriptName}');\n" +
     "console.log('Default timeout is set to ' + (DefaultTimeout/1000) + ' seconds');\n" +
@@ -99,7 +93,7 @@ lineForType: {
     "pause":
       function(step) { return scriptify("$browser.sleep( " + step.waitTime + ")"); },
     "switchToFrame":
-      function(step) { return scriptify("$browser.switchTo().frame('" + thisstepentifier + "')"); },
+      function(step) { return scriptify("$browser.switchTo().frame('" + step.identifier + "')"); },
     "switchToFrameByIndex":
       function(step) { return scriptify("$browser.switchTo().frame('" + step.index + "')"); },
     "switchToWindow":
@@ -438,7 +432,7 @@ lineForType: {
       value: "{name}"
     },
     "AlertPresent": {
-      getter: "isAlertPresent()",
+      getter: "$browser.switchTo().alert().then(function () { return true; }).thenCatch(function (e) { return false; })",
       getterFinish: "})\n\n",
       value: "alert"
     }
@@ -544,16 +538,18 @@ function print_nr_unsupported(thing) {
 }
 
 function scriptify(msg) {
+  var msg_fixed = msg.replace(/'/g, '"');
   return commentstep() +
     ".then(function() {\n" +
-    "  log(" + thisstep + ", \'" + msg + "\');\n" +
+    "  log(" + thisstep + ", \'" + msg_fixed + "\');\n" +
     "  return " + msg + "; })\n\n";
 }
 
 function scriptify_complex(logmsg, msg) {
+  var logmsg_fixed = logmsg.replace(/'/g, '"');
   return commentstep() +
     ".then(function() {\n" +
-    "  log(" + thisstep + ", \'" + logmsg + "\');\n" +
+    "  log(" + thisstep + ", \'" + logmsg_fixed + "\');\n" +
     "  return " + msg + "; })\n\n";
 }
 
