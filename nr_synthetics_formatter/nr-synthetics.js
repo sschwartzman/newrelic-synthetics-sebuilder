@@ -95,7 +95,7 @@ lineForType: {
     "switchToFrame":
       function(step) { return scriptify("$browser.switchTo().frame('" + step.identifier + "')"); },
     "switchToFrameByIndex":
-      function(step) { return scriptify("$browser.switchTo().frame('" + step.index + "')"); },
+      function(step) { return scriptify("$browser.switchTo().frame(" + step.index + ")"); },
     "switchToWindow":
       function(step) { return scriptify("$browser.switchTo().window('" + step.name + "')"); },
     "switchToDefaultContent":
@@ -411,8 +411,7 @@ lineForType: {
       "{getterFinish}", getter); },
   boolean_getters: {
     "TextPresent": {
-      getter: "$browser.findElement(By.tagName('body')).getText()\n" +
-      "  .then(function (text) { return text.indexOf({text}) != -1; })",
+      getter: "$browser.findElement(By.tagName('body')).getText().then(function (text) { return text.indexOf({text}) != -1; })",
       getterFinish: "})\n\n",
       value: "{text}"
     },
