@@ -31,7 +31,7 @@ This formatter plugin is tested and compatible with the old version of Se-Builde
 1. Download & install either Se-builder v2 or v3:
    * [se-builder 2](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
    * [Selenium Builder 3](https://addons.mozilla.org/en-GB/firefox/addon/selenium-builder/)
-   * You'll need [FireFox](https://www.mozilla.org/en-US/firefox/new/) too.
+   * You'll need [FireFox ESR 52](https://www.mozilla.org/en-US/firefox/organizations/). Selenium Builder is currently not compatible with Firefox Quantum (Firefox 60)
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin. Run it by going to <b>Tools > Web Developer > Launch Selenium Builder.</b>
 
 ### Install the plugin
