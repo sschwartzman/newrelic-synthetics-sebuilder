@@ -3,6 +3,12 @@ New Relic Synthetics<br>formatter for Selenium-builder
 
 Plugin (formatter) for Se-builder that generates javascript from Se-builder scripts to use in New Relic Synthetics Scripted Browser tests.
 
+## IMPORTANT - Katalon Recorder - A better alternative for recording NR Synthetics scripts!
+
+There is now a New Relic Synthetics exporter built-in to Katalon Recorder, an actively-updated IDE for synthetic testing.
+* Install Katalon Recorder from the Chrome Web Store (**no extensions needed!**): https://chrome.google.com/webstore/detail/katalon-recorder/ljdobmomdgdljniojadhoplhkpialdid
+* GitHub repo: https://github.com/katalon-studio/katalon-recorder/
+
 ## IMPORTANT - Version Compatibility
 
 ### Selenium Builder 3 Compatibility Update
@@ -29,7 +35,7 @@ This formatter plugin is tested and compatible with the old version of Se-Builde
 ### Install the prerequisites
 
 1. Download & install either Se-builder v2 or v3:
-   * [Firefox ESR 52](https://www.mozilla.org/en-US/firefox/organizations/) or the last pre-quantum release, [Firefox 56](https://archive.mozilla.org/pub/firefox/releases/56.0.2/). **Selenium Builder is currently not compatible with Firefox Quantum (Firefox 57+)**
+   * [Firefox ESR 52](https://ftp.mozilla.org/pub/firefox/releases/52.9.0esr/) or the last pre-quantum release, [Firefox 56](https://archive.mozilla.org/pub/firefox/releases/56.0.2/). **Selenium Builder is currently not compatible with Firefox Quantum (Firefox 57+)**
    * [Se-builder 2](http://www.saucelabs.com/addons/selenium-builder-latest.xpi).
    * [Selenium Builder 3](https://addons.mozilla.org/en-GB/firefox/addon/selenium-builder/)
 2. Run Se-builder at least once before proceeding. Running it the first time creates the folder where you'll put the plugin. Run it by going to <b>Tools > Web Developer > Launch Selenium Builder.</b>
